@@ -1,6 +1,16 @@
 spring:
   application:
     name: ingestor  # used by Micrometer tags, logs, etc.
+  threads:
+    virtual:
+      enabled: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+      acks: all
+      retries: 3
 
 server:
   port: ${SERVER_PORT:8080}
