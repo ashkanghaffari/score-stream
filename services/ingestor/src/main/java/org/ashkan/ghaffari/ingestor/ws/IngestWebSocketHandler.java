@@ -1,6 +1,7 @@
 package org.ashkan.ghaffari.ingestor.ws;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.ashkan.ghaffari.ingestor.redis.IdempotencyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -19,10 +20,13 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
 
     private final KafkaTemplate<String, byte[]> kafka;
     private final ObjectMapper mapper;
+    private final IdempotencyRepository idempotencyRepository;
 
-    public IngestWebSocketHandler(KafkaTemplate<String, byte[]> kafka, ObjectMapper mapper) {
+    public IngestWebSocketHandler(KafkaTemplate<String, byte[]> kafka, ObjectMapper mapper,
+                                  IdempotencyRepository idempotencyRepository) {
         this.kafka = kafka;
         this.mapper = mapper;
+        this.idempotencyRepository = idempotencyRepository;
     }
 
     @Override
@@ -43,7 +47,13 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
 
             if (incoming.idempotencyId() == null || incoming.chatId() == null || incoming.userId() == null
                 || incoming.type() == null) {
-                close(session, CloseStatus.BAD_DATA);
+                sendError(session, "Missing required fields");
+                return;
+            }
+
+            if (!idempotencyRepository.tryStore(incoming.idempotencyId())) {
+                log.debug("Duplicate message, rejecting processing");
+                sendError(session, "Duplicate idempotency key");
                 return;
             }
 
@@ -65,8 +75,8 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
                 });
 
         } catch (Exception e) {
-            log.debug("Bad frame from {}: {}", session.getId(), e.toString());
-            close(session, CloseStatus.BAD_DATA);
+            log.debug("Failed to process message for sessionId: {}: {}", session.getId(), e.toString());
+            sendError(session, "MALFORMED_PAYLOAD");
         }
     }
 
@@ -75,7 +85,9 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
         log.info("WebSocket closed: {} ({})", session.getId(), status);
     }
 
-    private void close(WebSocketSession s, CloseStatus status) {
-        try { s.close(status); } catch (Exception ignored) {}
+    private void sendError(WebSocketSession session, String reason) {
+        try {
+            session.sendMessage(new TextMessage("{\"error\":\"" + reason + "\"}"));
+        } catch (Exception ignored) {}
     }
 }
