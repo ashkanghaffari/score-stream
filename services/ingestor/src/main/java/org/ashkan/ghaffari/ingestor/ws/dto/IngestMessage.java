@@ -11,7 +11,7 @@ public record IngestMessage(
     String idempotencyId,
     String type,
     String chatId,
-    String userId,
+    String senderId,
     long timestamp,
     JsonNode payload
 ) {
@@ -29,8 +29,8 @@ public record IngestMessage(
         if (chatId == null || chatId.isBlank()) {
             throw new IllegalArgumentException("chatId is required");
         }
-        if (userId == null || userId.isBlank()) {
-            throw new IllegalArgumentException("userId is required");
+        if (senderId == null || senderId.isBlank()) {
+            throw new IllegalArgumentException("senderId is required");
         }
         if (timestamp <= 0) {
             throw new IllegalArgumentException("timestamp must be > 0");

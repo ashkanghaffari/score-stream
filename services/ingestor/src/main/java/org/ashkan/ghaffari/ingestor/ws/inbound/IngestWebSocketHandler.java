@@ -52,7 +52,7 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
         try {
             IngestMessage incoming = mapper.readValue(json, IngestMessage.class);
 
-            if (incoming.idempotencyId() == null || incoming.chatId() == null || incoming.userId() == null
+            if (incoming.idempotencyId() == null || incoming.chatId() == null || incoming.senderId() == null
                 || incoming.type() == null) {
                 sendError(session, "Missing required fields");
                 return;
@@ -71,7 +71,7 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
                 incoming.idempotencyId(),
                 incoming.type(),
                 incoming.chatId(),
-                incoming.userId(),
+                incoming.senderId(),
                 incoming.timestamp(),
                 incoming.payload()
             );

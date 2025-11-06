@@ -9,7 +9,7 @@ public record PublishMessage(
     String idempotencyId,
     String type,
     String chatId,
-    String userId,
+    String senderId,
     long timestamp,
     JsonNode payload
 ) {}

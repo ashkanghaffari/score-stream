@@ -34,7 +34,7 @@ public class PublishWebSocketHandler {
             message.idempotencyId(),
             message.type(),
             message.chatId(),
-            message.userId(),
+            message.senderId(),
             message.timestamp(),
             message.payload()
         );
@@ -43,9 +43,8 @@ public class PublishWebSocketHandler {
     }
 
     private void fanOutMessage(PublishMessage message) throws IOException {
-        Set<WebSocketSession> recipients = sessionRegistry.all(message.chatId());
-        for (WebSocketSession session : recipients) {
-
+        Set<WebSocketSession> sessions = sessionRegistry.all(message.chatId());
+        for (WebSocketSession session : sessions) {
             try {
                 session.sendMessage(new TextMessage(message.toString()));
             } catch(IOException ex) {
