@@ -1,32 +1,39 @@
-package org.ashkan.ghaffari.ingestor.ws;
+package org.ashkan.ghaffari.ingestor.ws.inbound;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ashkan.ghaffari.ingestor.redis.IdempotencyRepository;
+import org.ashkan.ghaffari.ingestor.ws.SessionRegistry;
+import org.ashkan.ghaffari.ingestor.ws.dto.IngestMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-@Component
+import java.util.UUID;
+
+@Service
 public class IngestWebSocketHandler extends TextWebSocketHandler {
 
     private static final Logger log = LoggerFactory.getLogger(IngestWebSocketHandler.class);
     private static final int MAX_TEXT_SIZE = 64 * 1024;
-    private static final String TOPIC = "text-ingest";
+    private static final String CLEAN_TOPIC = "text-clean";
+    private static final String FLAGGED_TOPIC = "text-flagged";
 
     private final KafkaTemplate<String, byte[]> kafka;
     private final ObjectMapper mapper;
     private final IdempotencyRepository idempotencyRepository;
+    private final SessionRegistry sessionRegistry;
 
     public IngestWebSocketHandler(KafkaTemplate<String, byte[]> kafka, ObjectMapper mapper,
-                                  IdempotencyRepository idempotencyRepository) {
+                                  IdempotencyRepository idempotencyRepository, SessionRegistry sessionRegistry) {
         this.kafka = kafka;
         this.mapper = mapper;
         this.idempotencyRepository = idempotencyRepository;
+        this.sessionRegistry = sessionRegistry;
     }
 
     @Override
@@ -43,7 +50,7 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
 
     private void process(WebSocketSession session, String json) {
         try {
-            IngestEvent incoming = mapper.readValue(json, IngestEvent.class);
+            IngestMessage incoming = mapper.readValue(json, IngestMessage.class);
 
             if (incoming.idempotencyId() == null || incoming.chatId() == null || incoming.userId() == null
                 || incoming.type() == null) {
@@ -57,7 +64,10 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
                 return;
             }
 
-            IngestEvent enriched = new IngestEvent(
+            sessionRegistry.registerSession(incoming.chatId(), session);
+
+            IngestMessage enriched = new IngestMessage(
+                UUID.randomUUID(),
                 incoming.idempotencyId(),
                 incoming.type(),
                 incoming.chatId(),
@@ -67,7 +77,7 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
             );
 
             byte[] serialized = mapper.writeValueAsBytes(enriched);
-            kafka.send(TOPIC, enriched.chatId(), serialized)
+            kafka.send(CLEAN_TOPIC, enriched.chatId(), serialized)
                 .whenComplete((res, ex) -> {
                     if (ex != null) {
                         log.warn("Kafka send failed: {}", ex.toString());
@@ -82,6 +92,7 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+        sessionRegistry.removeSession(session);
         log.info("WebSocket closed: {} ({})", session.getId(), status);
     }
 
