@@ -1,6 +1,26 @@
 spring:
   application:
     name: ingestor  # used by Micrometer tags, logs, etc.
+  threads:
+    virtual:
+      enabled: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: ws-publisher
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      auto-offset-reset: earliest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+      acks: all
+      retries: 3
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 server:
   port: ${SERVER_PORT:8080}
