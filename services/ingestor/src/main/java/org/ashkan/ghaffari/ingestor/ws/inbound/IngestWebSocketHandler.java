@@ -1,20 +1,25 @@
 package org.ashkan.ghaffari.ingestor.ws.inbound;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.ashkan.ghaffari.ingestor.dynamo.ChatMessage;
+import org.ashkan.ghaffari.ingestor.dynamo.ChatMessageRepository;
 import org.ashkan.ghaffari.ingestor.redis.IdempotencyRepository;
 import org.ashkan.ghaffari.ingestor.ws.ChatIdHandshakeInterceptor;
 import org.ashkan.ghaffari.ingestor.ws.SessionRegistry;
 import org.ashkan.ghaffari.ingestor.ws.dto.IngestMessage;
+import org.ashkan.ghaffari.ingestor.ws.dto.ChatTextMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -29,13 +34,16 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
     private final ObjectMapper mapper;
     private final IdempotencyRepository idempotencyRepository;
     private final SessionRegistry sessionRegistry;
+    private final ChatMessageRepository chatMessageRepository;
 
     public IngestWebSocketHandler(KafkaTemplate<String, byte[]> kafka, ObjectMapper mapper,
-                                  IdempotencyRepository idempotencyRepository, SessionRegistry sessionRegistry) {
+                                  IdempotencyRepository idempotencyRepository, SessionRegistry sessionRegistry,
+                                  ChatMessageRepository chatMessageRepository) {
         this.kafka = kafka;
         this.mapper = mapper;
         this.idempotencyRepository = idempotencyRepository;
         this.sessionRegistry = sessionRegistry;
+        this.chatMessageRepository = chatMessageRepository;
     }
 
     @Override
@@ -57,7 +65,7 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) {
+    protected void handleTextMessage(WebSocketSession session, org.springframework.web.socket.TextMessage message) {
         Thread.ofVirtual().start(() ->
             process(session, message.getPayload()));
     }
@@ -78,28 +86,41 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
                 return;
             }
 
-            sessionRegistry.registerSession(incoming.chatId(), session);
-
-            IngestMessage enriched = new IngestMessage(
+            ChatTextMessage chatTextMessage = new ChatTextMessage(
                 UUID.randomUUID(),
                 incoming.idempotencyId(),
                 incoming.type(),
                 incoming.chatId(),
                 incoming.senderId(),
-                incoming.timestamp(),
+                Instant.now(),
                 incoming.payload()
             );
 
-            byte[] serialized = mapper.writeValueAsBytes(enriched);
-            kafka.send(CLEAN_TOPIC, enriched.chatId(), serialized)
+            byte[] serialized = mapper.writeValueAsBytes(chatTextMessage);
+            kafka.send(CLEAN_TOPIC, chatTextMessage.chatId(), serialized)
                 .whenComplete((res, ex) -> {
                     if (ex != null) {
                         log.warn("Kafka send failed: {}", ex.toString());
                     }
                 });
 
+
+            Map<String, Object> payloadMap =
+                mapper.convertValue(chatTextMessage.payload(), new TypeReference<>() {});
+
+            chatMessageRepository.save(
+                new ChatMessage(
+                    chatTextMessage.chatId(),
+                    chatTextMessage.timestamp().toEpochMilli(),
+                    chatTextMessage.id().toString(),
+                    chatTextMessage.senderId(),
+                    payloadMap,
+                    false
+                )
+            );
+
         } catch (Exception e) {
-            log.debug("Failed to process message for sessionId: {}: {}", session.getId(), e.toString());
+            log.error("Failed to process message for sessionId: {}: {}", session.getId(), e.toString());
             sendError(session, "MALFORMED_PAYLOAD");
         }
     }
@@ -112,7 +133,7 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
 
     private void sendError(WebSocketSession session, String reason) {
         try {
-            session.sendMessage(new TextMessage("{\"error\":\"" + reason + "\"}"));
+            session.sendMessage(new org.springframework.web.socket.TextMessage("{\"error\":\"" + reason + "\"}"));
         } catch (Exception ignored) {}
     }
 }
