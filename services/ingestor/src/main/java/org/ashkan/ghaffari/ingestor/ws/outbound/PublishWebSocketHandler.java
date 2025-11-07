@@ -2,7 +2,7 @@ package org.ashkan.ghaffari.ingestor.ws.outbound;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ashkan.ghaffari.ingestor.ws.SessionRegistry;
-import org.ashkan.ghaffari.ingestor.ws.dto.IngestMessage;
+import org.ashkan.ghaffari.ingestor.ws.dto.ChatTextMessage;
 import org.ashkan.ghaffari.ingestor.ws.dto.PublishMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class PublishWebSocketHandler {
 
     @KafkaListener(topics = "text-clean", groupId = "ws-publisher")
     public void onMessage(byte[] data) throws IOException {
-        IngestMessage message = mapper.readValue(data, IngestMessage.class);
+        ChatTextMessage message = mapper.readValue(data, ChatTextMessage.class);
         PublishMessage publishMessage = new PublishMessage(
             message.id(),
             message.idempotencyId(),
@@ -48,7 +48,7 @@ public class PublishWebSocketHandler {
             try {
                 session.sendMessage(new TextMessage(message.toString()));
             } catch(IOException ex) {
-                log.debug("Failed to send message id: {} {}", message.id(), ex.getMessage());
+                log.warn("Failed to send message id: {} {}", message.id(), ex.getMessage());
                 throw ex;
             }
         }

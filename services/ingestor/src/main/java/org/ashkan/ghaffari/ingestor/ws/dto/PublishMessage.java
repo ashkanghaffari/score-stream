@@ -2,14 +2,15 @@ package org.ashkan.ghaffari.ingestor.ws.dto;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import java.time.Instant;
 import java.util.UUID;
 
 public record PublishMessage(
     UUID id,
     String idempotencyId,
-    String type,
+    MessageType type,
     String chatId,
     String senderId,
-    long timestamp,
+    Instant timestamp,
     JsonNode payload
 ) {}

@@ -25,8 +25,18 @@ services:
     volumes:
       - redis-data:/data
 
+  dynamodb:
+    image: amazon/dynamodb-local
+    container_name: dynamodb
+    ports:
+      - "8000:8000"
+    volumes:
+      - dynamodb-data:/home/dynamodblocal/data
+
 volumes:
   kafka-data:
     driver: local
   redis-data:
+    driver: local
+  dynamodb-data:
     driver: local
