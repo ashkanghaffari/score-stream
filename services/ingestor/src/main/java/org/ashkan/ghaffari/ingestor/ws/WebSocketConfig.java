@@ -3,6 +3,7 @@ package org.ashkan.ghaffari.ingestor.ws;
 import org.ashkan.ghaffari.ingestor.ws.inbound.IngestWebSocketHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
@@ -22,7 +23,13 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(handler, "/ws-ingest")
+            .addInterceptors(chatIdHandshakeInterceptor())
             .setAllowedOriginPatterns("*");
         log.info("WebSocket handler registered");
+    }
+
+    @Bean
+    public ChatIdHandshakeInterceptor chatIdHandshakeInterceptor() {
+        return new ChatIdHandshakeInterceptor();
     }
 }

@@ -2,6 +2,7 @@ package org.ashkan.ghaffari.ingestor.ws.inbound;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ashkan.ghaffari.ingestor.redis.IdempotencyRepository;
+import org.ashkan.ghaffari.ingestor.ws.ChatIdHandshakeInterceptor;
 import org.ashkan.ghaffari.ingestor.ws.SessionRegistry;
 import org.ashkan.ghaffari.ingestor.ws.dto.IngestMessage;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @Service
@@ -39,7 +41,19 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         session.setTextMessageSizeLimit(MAX_TEXT_SIZE);
-        log.info("WebSocket connected: {}", session.getId());
+        String chatId = (String) session.getAttributes().get(ChatIdHandshakeInterceptor.CHAT_ID_ATTR);
+        if (chatId == null) {
+            log.warn("Closing WebSocket {} due to missing chatId attribute", session.getId());
+            try {
+                session.close(CloseStatus.BAD_DATA);
+            } catch (IOException e) {
+                log.debug("Failed to close session {}: {}", session.getId(), e.getMessage());
+            }
+            return;
+        }
+
+        sessionRegistry.registerSession(chatId, session);
+        log.info("WebSocket connected: {} (chatId={})", session.getId(), chatId);
     }
 
     @Override
