@@ -29,7 +29,7 @@ public class ChatIdHandshakeInterceptor implements HandshakeInterceptor {
                 return true;
             })
             .orElseGet(() -> {
-                log.debug("Rejected WebSocket handshake without chatId");
+                log.warn("Rejected WebSocket handshake without chatId");
                 response.setStatusCode(HttpStatus.BAD_REQUEST);
                 return false;
             });
