@@ -1,9 +1,7 @@
 package org.ashkan.ghaffari.ingestor.ws.inbound;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.ashkan.ghaffari.ingestor.dynamo.ChatMessage;
-import org.ashkan.ghaffari.ingestor.dynamo.ChatMessageRepository;
+import org.ashkan.ghaffari.ingestor.dynamo.ChatMessageService;
 import org.ashkan.ghaffari.ingestor.redis.IdempotencyRepository;
 import org.ashkan.ghaffari.ingestor.ws.ChatIdHandshakeInterceptor;
 import org.ashkan.ghaffari.ingestor.ws.SessionRegistry;
@@ -14,12 +12,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -34,16 +32,16 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
     private final ObjectMapper mapper;
     private final IdempotencyRepository idempotencyRepository;
     private final SessionRegistry sessionRegistry;
-    private final ChatMessageRepository chatMessageRepository;
+    private final ChatMessageService chatMessageService;
 
     public IngestWebSocketHandler(KafkaTemplate<String, byte[]> kafka, ObjectMapper mapper,
                                   IdempotencyRepository idempotencyRepository, SessionRegistry sessionRegistry,
-                                  ChatMessageRepository chatMessageRepository) {
+                                  ChatMessageService chatMessageService) {
         this.kafka = kafka;
         this.mapper = mapper;
         this.idempotencyRepository = idempotencyRepository;
         this.sessionRegistry = sessionRegistry;
-        this.chatMessageRepository = chatMessageRepository;
+        this.chatMessageService = chatMessageService;
     }
 
     @Override
@@ -65,7 +63,7 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, org.springframework.web.socket.TextMessage message) {
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) {
         Thread.ofVirtual().start(() ->
             process(session, message.getPayload()));
     }
@@ -104,20 +102,7 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
                     }
                 });
 
-
-            Map<String, Object> payloadMap =
-                mapper.convertValue(chatTextMessage.payload(), new TypeReference<>() {});
-
-            chatMessageRepository.save(
-                new ChatMessage(
-                    chatTextMessage.chatId(),
-                    chatTextMessage.timestamp().toEpochMilli(),
-                    chatTextMessage.id().toString(),
-                    chatTextMessage.senderId(),
-                    payloadMap,
-                    false
-                )
-            );
+            chatMessageService.saveMessage(chatTextMessage);
 
         } catch (Exception e) {
             log.error("Failed to process message for sessionId: {}: {}", session.getId(), e.toString());
