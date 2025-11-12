@@ -1,0 +1,23 @@
+[
+  {
+    "name": "gift_card_request",
+    "type": "keyword",
+    "patterns": ["gift card", "steam card"],
+    "score": 40,
+    "enabled": true
+  },
+  {
+    "name": "urgent_language",
+    "type": "keyword",
+    "patterns": ["urgent", "immediately"],
+    "score": 20,
+    "enabled": true
+  },
+  {
+    "name": "crypto_address",
+    "type": "regex",
+    "patterns": ["0x[a-fA-F0-9]{40}"],
+    "score": 45,
+    "enabled": true
+  }
+]
