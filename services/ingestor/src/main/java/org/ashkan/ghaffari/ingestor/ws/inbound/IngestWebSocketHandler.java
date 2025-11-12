@@ -1,7 +1,7 @@
 package org.ashkan.ghaffari.ingestor.ws.inbound;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.ashkan.ghaffari.ingestor.dynamo.ChatMessageService;
+import org.ashkan.ghaffari.ingestor.dynamo.chatmessage.ChatMessageService;
 import org.ashkan.ghaffari.ingestor.redis.IdempotencyRepository;
 import org.ashkan.ghaffari.ingestor.ws.ChatIdHandshakeInterceptor;
 import org.ashkan.ghaffari.ingestor.ws.SessionRegistry;
