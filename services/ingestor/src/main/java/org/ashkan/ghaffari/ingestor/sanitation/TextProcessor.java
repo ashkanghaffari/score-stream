@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.ingestor.ruleengine;
+package org.ashkan.ghaffari.ingestor.sanitation;
 
 import org.apache.lucene.analysis.Analyzer;
 

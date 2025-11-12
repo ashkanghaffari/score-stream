@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.ingestor.dynamo;
+package org.ashkan.ghaffari.ingestor.dynamo.chatmessage;
 
 import org.springframework.stereotype.Repository;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;

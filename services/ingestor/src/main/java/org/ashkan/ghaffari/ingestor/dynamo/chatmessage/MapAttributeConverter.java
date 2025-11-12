@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.ingestor.dynamo;
+package org.ashkan.ghaffari.ingestor.dynamo.chatmessage;
 
 import software.amazon.awssdk.enhanced.dynamodb.AttributeConverter;
 import software.amazon.awssdk.enhanced.dynamodb.AttributeValueType;

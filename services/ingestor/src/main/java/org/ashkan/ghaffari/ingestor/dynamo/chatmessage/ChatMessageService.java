@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.ingestor.dynamo;
+package org.ashkan.ghaffari.ingestor.dynamo.chatmessage;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

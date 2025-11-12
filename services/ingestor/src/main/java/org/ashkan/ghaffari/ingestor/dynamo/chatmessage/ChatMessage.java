@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.ingestor.dynamo;
+package org.ashkan.ghaffari.ingestor.dynamo.chatmessage;
 
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbConvertedBy;

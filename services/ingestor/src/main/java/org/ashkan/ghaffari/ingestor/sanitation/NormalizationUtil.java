@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.ingestor.ruleengine;
+package org.ashkan.ghaffari.ingestor.sanitation;
 
 import com.ibm.icu.text.Normalizer2;
 import com.ibm.icu.text.Transliterator;
