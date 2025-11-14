@@ -17,6 +17,9 @@ import java.util.Set;
 public class PublishWebSocketHandler {
 
     private static final Logger log = LoggerFactory.getLogger(PublishWebSocketHandler.class);
+    private static final String RAW_TOPIC = "text-raw";
+    private static final String WS_CONSUMER_GROUP_ID = "ws-publisher";
+
     private final SessionRegistry sessionRegistry;
     private final ObjectMapper mapper;
 
@@ -25,7 +28,7 @@ public class PublishWebSocketHandler {
         this.mapper = mapper;
     }
 
-    @KafkaListener(topics = "text-clean", groupId = "ws-publisher")
+    @KafkaListener(topics = RAW_TOPIC, groupId = WS_CONSUMER_GROUP_ID)
     public void onMessage(byte[] data) throws IOException {
         ChatTextMessage message = mapper.readValue(data, ChatTextMessage.class);
         fanOutMessage(message);

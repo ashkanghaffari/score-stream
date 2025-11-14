@@ -24,7 +24,7 @@ public class RuleEngineConsumer {
     private static final String CLEAN_TOPIC = "text-clean";
     private static final String FLAGGED_TOPIC = "text-flagged";
     private static final String RAW_TOPIC = "text-raw";
-    private static final String CONSUMER_GROUP_ID = "rule-engine-consumer";
+    private static final String RULE_ENGINE_CONSUMER_GROUP_ID = "rule-engine-consumer";
 
     private final KafkaTemplate<String, byte[]> kafka;
     private final ObjectMapper mapper;
@@ -40,7 +40,7 @@ public class RuleEngineConsumer {
         this.ruleEngine = ruleEngine;
     }
 
-    @KafkaListener(topics = RAW_TOPIC, groupId = CONSUMER_GROUP_ID)
+    @KafkaListener(topics = RAW_TOPIC, groupId = RULE_ENGINE_CONSUMER_GROUP_ID)
     public void onMessage(byte[] data) throws IOException {
         ChatTextMessage message = mapper.readValue(data, ChatTextMessage.class);
         String textValue = extractPayloadText(message.payload());
