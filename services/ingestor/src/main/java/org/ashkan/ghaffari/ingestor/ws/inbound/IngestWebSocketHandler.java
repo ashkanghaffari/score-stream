@@ -1,12 +1,14 @@
 package org.ashkan.ghaffari.ingestor.ws.inbound;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.ashkan.ghaffari.ingestor.dynamo.chatmessage.ChatMessageService;
 import org.ashkan.ghaffari.ingestor.redis.IdempotencyRepository;
 import org.ashkan.ghaffari.ingestor.ws.ChatIdHandshakeInterceptor;
 import org.ashkan.ghaffari.ingestor.ws.SessionRegistry;
 import org.ashkan.ghaffari.ingestor.ws.dto.IngestMessage;
 import org.ashkan.ghaffari.ingestor.ws.dto.ChatTextMessage;
+import org.ashkan.ghaffari.ingestor.ws.dto.MessageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -25,23 +27,19 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
 
     private static final Logger log = LoggerFactory.getLogger(IngestWebSocketHandler.class);
     private static final int MAX_TEXT_SIZE = 64 * 1024;
-    private static final String CLEAN_TOPIC = "text-clean";
-    private static final String FLAGGED_TOPIC = "text-flagged";
+    private static final String RAW_TOPIC = "text-raw";
 
     private final KafkaTemplate<String, byte[]> kafka;
     private final ObjectMapper mapper;
     private final IdempotencyRepository idempotencyRepository;
     private final SessionRegistry sessionRegistry;
-    private final ChatMessageService chatMessageService;
 
     public IngestWebSocketHandler(KafkaTemplate<String, byte[]> kafka, ObjectMapper mapper,
-                                  IdempotencyRepository idempotencyRepository, SessionRegistry sessionRegistry,
-                                  ChatMessageService chatMessageService) {
+                                  IdempotencyRepository idempotencyRepository, SessionRegistry sessionRegistry) {
         this.kafka = kafka;
         this.mapper = mapper;
         this.idempotencyRepository = idempotencyRepository;
         this.sessionRegistry = sessionRegistry;
-        this.chatMessageService = chatMessageService;
     }
 
     @Override
@@ -84,6 +82,20 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
                 return;
             }
 
+            if (incoming.payload() == null) {
+                sendError(session, "Payload is required");
+                return;
+            }
+
+            String textValue = null;
+            if (incoming.type() == MessageType.TEXT) {
+                textValue = extractPayloadText(incoming.payload());
+                if (textValue == null || textValue.isBlank()) {
+                    sendError(session, "Payload must include non-empty \"text\" for TEXT messages");
+                    return;
+                }
+            }
+
             ChatTextMessage chatTextMessage = new ChatTextMessage(
                 UUID.randomUUID(),
                 incoming.idempotencyId(),
@@ -94,15 +106,17 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
                 incoming.payload()
             );
 
-            byte[] serialized = mapper.writeValueAsBytes(chatTextMessage);
-            kafka.send(CLEAN_TOPIC, chatTextMessage.chatId(), serialized)
-                .whenComplete((res, ex) -> {
-                    if (ex != null) {
-                        log.warn("Kafka send failed: {}", ex.toString());
-                    }
-                });
-
-            chatMessageService.saveMessage(chatTextMessage);
+            try {
+                byte[] serialized = mapper.writeValueAsBytes(chatTextMessage);
+                kafka.send(RAW_TOPIC, chatTextMessage.chatId(), serialized)
+                    .whenComplete((res, ex) -> {
+                        if (ex != null) {
+                            log.warn("Kafka send failed for topic {}: {}", RAW_TOPIC, ex.toString());
+                        }
+                    });
+            } catch (JsonProcessingException ex) {
+                throw new IllegalStateException("Failed to serialize payload for topic " + RAW_TOPIC, ex);
+            }
 
         } catch (Exception e) {
             log.error("Failed to process message for sessionId: {}: {}", session.getId(), e.toString());
@@ -120,5 +134,14 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
         try {
             session.sendMessage(new org.springframework.web.socket.TextMessage("{\"error\":\"" + reason + "\"}"));
         } catch (Exception ignored) {}
+    }
+
+    private String extractPayloadText(JsonNode payload) {
+        JsonNode textNode = payload.get("text");
+        if (textNode == null) {
+            return null;
+        }
+        String value = textNode.asText();
+        return value != null ? value.trim() : null;
     }
 }
