@@ -3,13 +3,11 @@ package org.ashkan.ghaffari.ingestor.ruleengine;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.ashkan.ghaffari.ingestor.dynamo.chatmessage.ChatMessageService;
 import org.ashkan.ghaffari.ingestor.ruleengine.sanitation.ProcessedTextResult;
 import org.ashkan.ghaffari.ingestor.ruleengine.sanitation.TextProcessor;
 import org.ashkan.ghaffari.ingestor.ws.dto.ChatMessagePayload;
 import org.ashkan.ghaffari.ingestor.ws.dto.ChatTextMessage;
 import org.ashkan.ghaffari.ingestor.ws.dto.FlaggedMessage;
-import org.ashkan.ghaffari.ingestor.ws.dto.MessageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -45,30 +43,23 @@ public class RuleEngineConsumer {
     @KafkaListener(topics = RAW_TOPIC, groupId = CONSUMER_GROUP_ID)
     public void onMessage(byte[] data) throws IOException {
         ChatTextMessage message = mapper.readValue(data, ChatTextMessage.class);
+        String textValue = extractPayloadText(message.payload());
+        EvaluationResult evaluationResult = textEvalResult(textValue);
 
-        String textValue = null;
-        if (message.type() == MessageType.TEXT) {
-            textValue = extractPayloadText(message.payload());
-            // TODO: throw runtime exception for emtpy payload
-        }
-
-        if (textValue != null) {
-            EvaluationResult evaluationResult = textEvalResult(textValue);
-            if (!"ALLOW".equalsIgnoreCase(evaluationResult.decision())) {
-                FlaggedMessage flaggedMessage = new FlaggedMessage(
-                    message.id(),
-                    message.idempotencyId(),
-                    message.chatId(),
-                    message.senderId(),
-                    message.timestamp(),
-                    evaluationResult.totalScore(),
-                    evaluationResult.decision(),
-                    evaluationResult.triggered(),
-                    message.payload()
-                );
-                sendMessageToKafka(flaggedMessage, FLAGGED_TOPIC);
+        if (!"ALLOW".equalsIgnoreCase(evaluationResult.decision())) {
+            FlaggedMessage flaggedMessage = new FlaggedMessage(
+                message.id(),
+                message.idempotencyId(),
+                message.chatId(),
+                message.senderId(),
+                message.timestamp(),
+                evaluationResult.totalScore(),
+                evaluationResult.decision(),
+                evaluationResult.triggered(),
+                message.payload()
+            );
+            sendMessageToKafka(flaggedMessage, FLAGGED_TOPIC);
             }
-        }
 
         sendMessageToKafka(message, CLEAN_TOPIC);
     }
@@ -106,6 +97,4 @@ public class RuleEngineConsumer {
             throw new IllegalStateException("Failed to serialize payload for topic " + topic, ex);
         }
     }
-
-
 }
