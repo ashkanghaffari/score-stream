@@ -11,7 +11,7 @@ public class ChatMessageRepository {
     private final DynamoDbTable<ChatMessage> table;
 
     public ChatMessageRepository(DynamoDbEnhancedClient enhancedClient) {
-        this.table = enhancedClient.table("ChatMessages",
+        this.table = enhancedClient.table("ChatMessage",
             TableSchema.fromBean(ChatMessage.class));
     }
 

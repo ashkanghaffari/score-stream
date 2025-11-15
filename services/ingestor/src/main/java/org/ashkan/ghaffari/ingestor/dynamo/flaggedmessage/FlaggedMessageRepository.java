@@ -11,7 +11,7 @@ public class FlaggedMessageRepository {
     private final DynamoDbTable<FlaggedMessage> table;
 
     public FlaggedMessageRepository(DynamoDbEnhancedClient enhancedClient) {
-        this.table = enhancedClient.table("FlaggedMessages",
+        this.table = enhancedClient.table("FlaggedMessage",
             TableSchema.fromBean(FlaggedMessage.class));
     }
 
