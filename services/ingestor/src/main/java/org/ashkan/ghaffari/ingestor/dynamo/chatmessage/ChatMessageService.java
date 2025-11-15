@@ -31,8 +31,7 @@ public class ChatMessageService {
                     chatTextMessage.timestamp().toEpochMilli(),
                     chatTextMessage.id().toString(),
                     chatTextMessage.senderId(),
-                    payloadMap,
-                    false
+                    payloadMap
                 )
             );
         } catch (UnsupportedOperationException ex) {

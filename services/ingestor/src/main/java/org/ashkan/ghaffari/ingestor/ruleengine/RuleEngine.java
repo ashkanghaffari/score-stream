@@ -1,12 +1,13 @@
 package org.ashkan.ghaffari.ingestor.ruleengine;
 
 import org.ashkan.ghaffari.ingestor.ruleengine.rules.Rule;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Component
 public class RuleEngine {
     private volatile List<Rule> rules = List.of();
 
@@ -26,9 +27,16 @@ public class RuleEngine {
             }
         }
 
-        String decision = (total >= 80) ? "BLOCK"
-            : (total >= 60) ? "FLAG"
-            : "ALLOW";
+//        String decision = (total >= 80) ? "BLOCK"
+//            : (total >= 60) ? "FLAG"
+//            : "ALLOW";
+        String decision = null;
+        if (!triggered.isEmpty()) {
+            decision = "FLAG";
+        } else {
+            decision = "ALLOW";
+        }
+
 
         return new EvaluationResult(total, triggered, decision);
     }

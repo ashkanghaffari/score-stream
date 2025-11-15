@@ -13,4 +13,4 @@ public record ChatTextMessage(
    String senderId,
    Instant timestamp,
    JsonNode payload
-) {}
+) implements ChatMessagePayload {}

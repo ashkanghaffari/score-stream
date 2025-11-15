@@ -3,7 +3,6 @@ package org.ashkan.ghaffari.ingestor.ws.outbound;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ashkan.ghaffari.ingestor.ws.SessionRegistry;
 import org.ashkan.ghaffari.ingestor.ws.dto.ChatTextMessage;
-import org.ashkan.ghaffari.ingestor.ws.dto.PublishMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -18,6 +17,9 @@ import java.util.Set;
 public class PublishWebSocketHandler {
 
     private static final Logger log = LoggerFactory.getLogger(PublishWebSocketHandler.class);
+    private static final String RAW_TOPIC = "text-raw";
+    private static final String WS_CONSUMER_GROUP_ID = "ws-publisher";
+
     private final SessionRegistry sessionRegistry;
     private final ObjectMapper mapper;
 
@@ -26,23 +28,13 @@ public class PublishWebSocketHandler {
         this.mapper = mapper;
     }
 
-    @KafkaListener(topics = "text-clean", groupId = "ws-publisher")
+    @KafkaListener(topics = RAW_TOPIC, groupId = WS_CONSUMER_GROUP_ID)
     public void onMessage(byte[] data) throws IOException {
         ChatTextMessage message = mapper.readValue(data, ChatTextMessage.class);
-        PublishMessage publishMessage = new PublishMessage(
-            message.id(),
-            message.idempotencyId(),
-            message.type(),
-            message.chatId(),
-            message.senderId(),
-            message.timestamp(),
-            message.payload()
-        );
-
-        fanOutMessage(publishMessage);
+        fanOutMessage(message);
     }
 
-    private void fanOutMessage(PublishMessage message) throws IOException {
+    private void fanOutMessage(ChatTextMessage message) throws IOException {
         Set<WebSocketSession> sessions = sessionRegistry.all(message.chatId());
         for (WebSocketSession session : sessions) {
             try {

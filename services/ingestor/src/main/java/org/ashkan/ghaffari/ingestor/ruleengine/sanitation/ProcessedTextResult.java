@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.ingestor.sanitation;
+package org.ashkan.ghaffari.ingestor.ruleengine.sanitation;
 
 import java.util.List;
 
