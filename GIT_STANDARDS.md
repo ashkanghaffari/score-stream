@@ -42,6 +42,7 @@ ci/61-cache-docker-layers
 **Types (use this slim set)**
 - `feat` — new feature
 - `fix` — bug fix
+- `refactor` - non-functional changes
 - `docs` — docs-only changes
 - `test` — tests-only
 - `ci` — CI/CD, build, tooling
