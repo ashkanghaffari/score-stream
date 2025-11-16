@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ashkan.ghaffari.ingestor.redis.IdempotencyRepository;
-import org.ashkan.ghaffari.ingestor.ws.ChatIdHandshakeInterceptor;
 import org.ashkan.ghaffari.ingestor.ws.SessionRegistry;
 import org.ashkan.ghaffari.ingestor.ws.dto.IngestMessage;
 import org.ashkan.ghaffari.ingestor.ws.dto.ChatTextMessage;
@@ -45,7 +44,7 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         session.setTextMessageSizeLimit(MAX_TEXT_SIZE);
-        String chatId = (String) session.getAttributes().get(ChatIdHandshakeInterceptor.CHAT_ID_ATTR);
+        String chatId = sessionRegistry.getChatId(session);
         if (chatId == null) {
             log.warn("Closing WebSocket {} due to missing chatId attribute", session.getId());
             try {
@@ -69,6 +68,11 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
     private void process(WebSocketSession session, String json) {
         try {
             IngestMessage incoming = mapper.readValue(json, IngestMessage.class);
+
+            if (!incoming.chatId().equals(sessionRegistry.getChatId(session))) {
+                sendError(session, "Invalid chatId");
+                return;
+            }
 
             if (incoming.idempotencyId() == null || incoming.chatId() == null || incoming.senderId() == null
                 || incoming.type() == null) {
