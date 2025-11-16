@@ -13,7 +13,7 @@ public class RuleConfigRepository {
     private final DynamoDbTable<RuleConfig> table;
 
     public RuleConfigRepository(DynamoDbEnhancedClient client) {
-        this.table = client.table("RuleConfiguration", TableSchema.fromBean(RuleConfig.class));
+        this.table = client.table("RuleConfig", TableSchema.fromBean(RuleConfig.class));
     }
 
     public List<RuleConfig> loadAll() {
