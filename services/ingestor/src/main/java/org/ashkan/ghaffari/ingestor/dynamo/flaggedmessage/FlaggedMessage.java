@@ -88,12 +88,12 @@ public class FlaggedMessage {
         this.decision = decision;
     }
 
+    @DynamoDbConvertedBy(RuleResultListConverter.class)
     public List<RuleResult> getTriggeredRules() {
         return triggeredRules;
     }
     public void setTriggeredRules(List<RuleResult> triggeredRules) {
         this.triggeredRules = triggeredRules;
     }
-
 
 }
