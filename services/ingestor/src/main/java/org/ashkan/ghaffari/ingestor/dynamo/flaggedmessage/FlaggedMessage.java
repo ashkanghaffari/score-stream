@@ -21,11 +21,14 @@ public class FlaggedMessage {
     private int totalScore;
     private String decision;
     private List<RuleResult> triggeredRules;
+    private boolean analyzed;
+    private String analysisId;
 
     public FlaggedMessage() {}
 
     public FlaggedMessage(String chatId, Long timestamp, String messageId, String senderId, Map<String, Object> payload,
-                          int totalScore, String decision, List<RuleResult> triggeredRules) {
+                          int totalScore, String decision, List<RuleResult> triggeredRules, boolean analyzed,
+                          String analysisId) {
         this.chatId = chatId;
         this.timestamp = timestamp;
         this.messageId = messageId;
@@ -34,6 +37,8 @@ public class FlaggedMessage {
         this.totalScore = totalScore;
         this.decision = decision;
         this.triggeredRules = triggeredRules;
+        this.analyzed = analyzed;
+        this.analysisId = analysisId;
     }
 
     @DynamoDbPartitionKey
@@ -96,4 +101,9 @@ public class FlaggedMessage {
         this.triggeredRules = triggeredRules;
     }
 
+    public boolean isAnalyzed() { return analyzed; }
+    public void setAnalyzed(boolean analyzed) { this.analyzed = analyzed; }
+
+    public String getAnalysisId() { return analysisId; }
+    public void setAnalysisId(String analysisId) { this.analysisId = analysisId; }
 }
