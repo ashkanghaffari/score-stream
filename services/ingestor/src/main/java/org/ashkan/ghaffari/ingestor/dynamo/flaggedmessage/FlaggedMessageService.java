@@ -35,7 +35,9 @@ public class FlaggedMessageService {
                     payloadMap,
                     flaggedMessage.totalScore(),
                     flaggedMessage.decision(),
-                    flaggedMessage.triggeredRules()
+                    flaggedMessage.triggeredRules(),
+                    false,
+                    null
                 )
             );
         } catch (UnsupportedOperationException ex) {
