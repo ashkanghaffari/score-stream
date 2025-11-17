@@ -21,6 +21,7 @@
     </properties>
 
     <modules>
+        <module>services/common-domain</module>
         <module>services/ingestor</module>
         <module>services/inference-analyzer</module>
     </modules>
