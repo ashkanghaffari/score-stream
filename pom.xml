@@ -22,5 +22,6 @@
 
     <modules>
         <module>services/ingestor</module>
+        <module>services/inference-analyzer</module>
     </modules>
 </project>
