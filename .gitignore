@@ -32,3 +32,7 @@ build/
 
 ### VS Code ###
 .vscode/
+/infra/local-infra/create-ruleconfigs-dynamodb.sh
+/infra/local-infra/dynamoc-db-create-tables.sh
+/infra/local-infra/kafka-topics-create.sh
+/AGENTS.md
