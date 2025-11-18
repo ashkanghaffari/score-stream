@@ -14,7 +14,8 @@ public class InferenceAnalyzerApplication {
     }
 
     @Bean
-    public Function<String, String> ping() {
+    public Function<String, String> inferenceAnalysis() {
+
         return input -> "inference-analyzer::" + (input == null ? "ok" : input);
     }
 }

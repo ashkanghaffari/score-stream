@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.inferenceanalyzer.dynamodb;
+package org.ashkan.ghaffari.inferenceanalyzer.dynamodb.flaggedmessage;
 
 import org.ashkan.ghaffari.ingestor.dynamo.flaggedmessage.FlaggedMessage;
 import org.springframework.stereotype.Repository;

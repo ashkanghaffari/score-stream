@@ -1,6 +1,6 @@
 package org.ashkan.ghaffari.inferenceanalyzer;
 
-import org.ashkan.ghaffari.inferenceanalyzer.dynamodb.FlaggedMessageService;
+import org.ashkan.ghaffari.inferenceanalyzer.dynamodb.flaggedmessage.FlaggedMessageService;
 import org.springframework.stereotype.Service;
 
 @Service

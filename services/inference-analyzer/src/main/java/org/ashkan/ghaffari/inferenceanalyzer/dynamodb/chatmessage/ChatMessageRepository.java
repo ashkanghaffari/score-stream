@@ -1,0 +1,18 @@
+package org.ashkan.ghaffari.inferenceanalyzer.dynamodb.chatmessage;
+
+import org.ashkan.ghaffari.ingestor.dynamo.chatmessage.ChatMessage;
+import org.springframework.stereotype.Repository;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
+import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
+
+@Repository
+public class ChatMessageRepository {
+
+    private final DynamoDbTable<ChatMessage> table;
+
+    public ChatMessageRepository(DynamoDbEnhancedClient enhancedClient) {
+        this.table = enhancedClient.table("ChatMessage",
+            TableSchema.fromBean(ChatMessage.class));
+    }
+}
