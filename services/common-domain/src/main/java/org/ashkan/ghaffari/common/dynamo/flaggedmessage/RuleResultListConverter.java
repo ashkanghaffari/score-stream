@@ -1,6 +1,6 @@
-package org.ashkan.ghaffari.ingestor.dynamo.flaggedmessage;
+package org.ashkan.ghaffari.common.dynamo.flaggedmessage;
 
-import org.ashkan.ghaffari.ingestor.ruleengine.RuleResult;
+import org.ashkan.ghaffari.common.ruleengine.RuleResult;
 import software.amazon.awssdk.enhanced.dynamodb.AttributeConverter;
 import software.amazon.awssdk.enhanced.dynamodb.AttributeValueType;
 import software.amazon.awssdk.enhanced.dynamodb.EnhancedType;

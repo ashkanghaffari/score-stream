@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.ingestor.ruleengine;
+package org.ashkan.ghaffari.common.ruleengine;
 
 public record RuleResult(
     String name,

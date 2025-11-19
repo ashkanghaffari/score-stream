@@ -1,7 +1,7 @@
-package org.ashkan.ghaffari.ingestor.ws.dto;
+package org.ashkan.ghaffari.common.ws.dto;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.ashkan.ghaffari.ingestor.ruleengine.RuleResult;
+import org.ashkan.ghaffari.common.ruleengine.RuleResult;
 
 import java.time.Instant;
 import java.util.List;

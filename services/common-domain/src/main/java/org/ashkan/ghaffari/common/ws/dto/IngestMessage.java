@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.ingestor.ws.dto;
+package org.ashkan.ghaffari.common.ws.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -12,7 +12,6 @@ public record IngestMessage(
     JsonNode payload
 ) {
     public IngestMessage {
-        // Required non-null fields
         if (idempotencyId == null || idempotencyId.isBlank()) {
             throw new IllegalArgumentException("idempotencyId is required");
         }
