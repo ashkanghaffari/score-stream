@@ -1,6 +1,6 @@
 package org.ashkan.ghaffari.ingestor.ruleengine.rules;
 
-import org.ashkan.ghaffari.ingestor.ruleengine.RuleResult;
+import org.ashkan.ghaffari.common.ruleengine.RuleResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

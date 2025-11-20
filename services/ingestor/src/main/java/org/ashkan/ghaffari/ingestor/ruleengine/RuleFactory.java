@@ -1,6 +1,6 @@
 package org.ashkan.ghaffari.ingestor.ruleengine;
 
-import org.ashkan.ghaffari.ingestor.dynamo.ruleconfig.RuleConfig;
+import org.ashkan.ghaffari.common.dynamo.ruleconfig.RuleConfig;
 import org.ashkan.ghaffari.ingestor.ruleengine.rules.KeywordRule;
 import org.ashkan.ghaffari.ingestor.ruleengine.rules.RegexRule;
 import org.ashkan.ghaffari.ingestor.ruleengine.rules.Rule;

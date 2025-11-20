@@ -1,8 +1,8 @@
 package org.ashkan.ghaffari.ingestor.ruleengine;
 
+import org.ashkan.ghaffari.common.ruleengine.RuleResult;
 import org.ashkan.ghaffari.ingestor.ruleengine.rules.Rule;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
