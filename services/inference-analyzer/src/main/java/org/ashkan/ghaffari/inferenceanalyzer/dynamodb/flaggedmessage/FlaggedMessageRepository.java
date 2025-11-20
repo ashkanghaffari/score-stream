@@ -1,6 +1,6 @@
 package org.ashkan.ghaffari.inferenceanalyzer.dynamodb.flaggedmessage;
 
-import org.ashkan.ghaffari.ingestor.dynamo.flaggedmessage.FlaggedMessage;
+import org.ashkan.ghaffari.common.dynamo.flaggedmessage.FlaggedMessage;
 import org.springframework.stereotype.Repository;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
