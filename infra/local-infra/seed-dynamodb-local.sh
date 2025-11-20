@@ -21,7 +21,7 @@ aws dynamodb create-table \
   --key-schema \
     AttributeName=chatId,KeyType=HASH \
     AttributeName=timestamp,KeyType=RANGE \
-  --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
+  --billing-mode PAY_PER_REQUEST \
   >/dev/null && note "Created $CHAT_TABLE" || note "$CHAT_TABLE may already exist"
 
 aws dynamodb create-table \
@@ -34,7 +34,7 @@ aws dynamodb create-table \
   --key-schema \
     AttributeName=chatId,KeyType=HASH \
     AttributeName=timestamp,KeyType=RANGE \
-  --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
+  --billing-mode PAY_PER_REQUEST \
   >/dev/null && note "Created $FLAGGED_TABLE" || note "$FLAGGED_TABLE may already exist"
 
 note "Seeding chat messages..."
