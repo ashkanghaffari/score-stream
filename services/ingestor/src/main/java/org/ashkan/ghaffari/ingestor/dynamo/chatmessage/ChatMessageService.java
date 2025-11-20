@@ -2,7 +2,8 @@ package org.ashkan.ghaffari.ingestor.dynamo.chatmessage;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.ashkan.ghaffari.ingestor.ws.dto.ChatTextMessage;
+import org.ashkan.ghaffari.common.dynamo.chatmessage.ChatMessage;
+import org.ashkan.ghaffari.common.ws.dto.ChatTextMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
