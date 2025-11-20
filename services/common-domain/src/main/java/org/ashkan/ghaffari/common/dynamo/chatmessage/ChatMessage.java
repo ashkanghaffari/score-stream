@@ -15,18 +15,16 @@ public class ChatMessage {
     private String messageId;
     private String senderId;
     private Map<String, Object> payload;
-    private boolean flagged;
 
     public ChatMessage() {}
 
     public ChatMessage(String chatId, Long timestamp, String messageId, String senderId,
-                       Map<String, Object> payload, boolean flagged) {
+                       Map<String, Object> payload) {
         this.chatId = chatId;
         this.timestamp = timestamp;
         this.messageId = messageId;
         this.senderId = senderId;
         this.payload = payload;
-        this.flagged = flagged;
     }
 
     @DynamoDbPartitionKey
@@ -46,7 +44,4 @@ public class ChatMessage {
     @DynamoDbConvertedBy(MapAttributeConverter.class)
     public Map<String, Object> getPayload() { return payload; }
     public void setPayload(Map<String, Object> payload) { this.payload = payload; }
-
-    public boolean isFlagged() { return flagged; }
-    public void setFlagged(boolean flagged) { this.flagged = flagged; }
 }
