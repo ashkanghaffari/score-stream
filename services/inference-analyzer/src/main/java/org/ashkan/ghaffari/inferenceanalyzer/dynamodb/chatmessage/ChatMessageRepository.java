@@ -9,6 +9,7 @@ import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,11 +38,8 @@ public class ChatMessageRepository {
             .limit(limit)
         );
 
-        List<ChatMessage> items = pages.items().stream().toList();
-
-        // Put in ascending order so window is chronological
+        List<ChatMessage> items = new ArrayList<>(pages.items().stream().toList());
         Collections.reverse(items);
-
         return items;
     }
 
