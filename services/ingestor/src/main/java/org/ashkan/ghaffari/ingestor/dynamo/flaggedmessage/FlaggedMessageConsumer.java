@@ -1,7 +1,7 @@
 package org.ashkan.ghaffari.ingestor.dynamo.flaggedmessage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.ashkan.ghaffari.ingestor.ws.dto.FlaggedMessage;
+import org.ashkan.ghaffari.common.ws.dto.FlaggedMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;

@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.ingestor.dynamo.ruleconfig;
+package org.ashkan.ghaffari.common.dynamo.ruleconfig;
 
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;

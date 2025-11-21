@@ -1,6 +1,6 @@
 package org.ashkan.ghaffari.ingestor.ruleengine;
 
-import org.ashkan.ghaffari.ingestor.dynamo.ruleconfig.RuleConfig;
+import org.ashkan.ghaffari.common.dynamo.ruleconfig.RuleConfig;
 import org.ashkan.ghaffari.ingestor.dynamo.ruleconfig.RuleConfigRepository;
 import org.ashkan.ghaffari.ingestor.ruleengine.rules.Rule;
 import org.springframework.boot.CommandLineRunner;

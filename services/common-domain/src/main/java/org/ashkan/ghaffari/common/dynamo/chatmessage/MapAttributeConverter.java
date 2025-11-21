@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.ingestor.dynamo.chatmessage;
+package org.ashkan.ghaffari.common.dynamo.chatmessage;
 
 import software.amazon.awssdk.enhanced.dynamodb.AttributeConverter;
 import software.amazon.awssdk.enhanced.dynamodb.AttributeValueType;
@@ -38,8 +38,6 @@ public class MapAttributeConverter implements AttributeConverter<Map<String, Obj
         return AttributeValueType.M;
     }
 
-    // --- Helpers ---
-
     private Map<String, AttributeValue> convertMap(Map<String, Object> src) {
         Map<String, AttributeValue> result = new LinkedHashMap<>();
         for (Map.Entry<String, Object> entry : src.entrySet()) {
@@ -74,7 +72,6 @@ public class MapAttributeConverter implements AttributeConverter<Map<String, Obj
             );
         }
 
-        // Fallback: Convert everything else to String
         return AttributeValue.fromS(value.toString());
     }
 

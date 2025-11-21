@@ -1,6 +1,6 @@
 package org.ashkan.ghaffari.ingestor.ruleengine.rules;
 
-import org.ashkan.ghaffari.ingestor.ruleengine.RuleResult;
+import org.ashkan.ghaffari.common.ruleengine.RuleResult;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

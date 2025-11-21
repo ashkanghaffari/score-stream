@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.ingestor.dynamo.chatmessage;
+package org.ashkan.ghaffari.common.dynamo.chatmessage;
 
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbConvertedBy;
@@ -45,4 +45,3 @@ public class ChatMessage {
     public Map<String, Object> getPayload() { return payload; }
     public void setPayload(Map<String, Object> payload) { this.payload = payload; }
 }
-

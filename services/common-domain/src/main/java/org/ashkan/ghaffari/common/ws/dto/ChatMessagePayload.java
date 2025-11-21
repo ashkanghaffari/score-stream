@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.ingestor.ws.dto;
+package org.ashkan.ghaffari.common.ws.dto;
 
 public interface ChatMessagePayload {
     String chatId();

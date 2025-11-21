@@ -5,8 +5,5 @@ spring:
     virtual:
       enabled: true
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info
+server:
+  port: ${SERVER_PORT:8082}
