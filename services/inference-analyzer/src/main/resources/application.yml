@@ -7,3 +7,9 @@ spring:
 
 server:
   port: ${SERVER_PORT:8082}
+
+openai:
+  base-url: https://api.openai.com/v1
+  model: gpt-4o-mini
+  temperature: 0.2
+  max-tokens: 200
