@@ -15,7 +15,9 @@ public class InferenceAnalyzerApplication {
 
     @Bean
     public Function<String, String> inferenceAnalysis(InferenceAnalyzer inferenceAnalyzer) {
-        inferenceAnalyzer.analyze();
-        return input -> "inference-analyzer::" + (input == null ? "ok" : input);
+        return input -> {
+            inferenceAnalyzer.analyze();
+            return "Analysis completed successfully.";
+        };
     }
 }
