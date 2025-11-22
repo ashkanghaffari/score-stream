@@ -3,21 +3,26 @@ package org.ashkan.ghaffari.inferenceanalyzer;
 import org.ashkan.ghaffari.common.dynamo.flaggedmessage.FlaggedMessage;
 import org.ashkan.ghaffari.inferenceanalyzer.dynamodb.chatmessage.ChatMessageService;
 import org.ashkan.ghaffari.inferenceanalyzer.dynamodb.flaggedmessage.FlaggedMessageService;
+import org.ashkan.ghaffari.inferenceanalyzer.openai.OpenAIService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class InferenceAnalyzer {
 
     private final FlaggedMessageService flaggedMessageService;
     private final ChatMessageService chatMessageService;
+    private final OpenAIService openAIService;
 
     public InferenceAnalyzer(FlaggedMessageService flaggedMessageService,
-                             ChatMessageService chatMessageService) {
+                             ChatMessageService chatMessageService,
+                             OpenAIService openAIService) {
         this.flaggedMessageService = flaggedMessageService;
         this.chatMessageService = chatMessageService;
+        this.openAIService = openAIService;
     }
 
     public void analyze() {
@@ -27,7 +32,7 @@ public class InferenceAnalyzer {
             .map(this::buildConversationContext)
             .toList();
 
-        // TODO: build model-specific requests and persist analysis results.
+        openAIService.send(conversationContexts);
     }
 
     private ConversationContext buildConversationContext(FlaggedMessage flaggedMessage) {
@@ -49,7 +54,7 @@ public class InferenceAnalyzer {
             turns,
             flaggedMessage.getChatId(),
             flaggedMessage.getTimestamp(),
-            flaggedMessage.getAnalysisId()
+            UUID.randomUUID().toString()
         );
     }
 
