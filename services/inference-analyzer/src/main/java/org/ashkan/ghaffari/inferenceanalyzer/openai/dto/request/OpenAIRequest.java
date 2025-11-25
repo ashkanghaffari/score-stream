@@ -1,6 +1,6 @@
 package org.ashkan.ghaffari.inferenceanalyzer.openai.dto.request;
 
-import org.ashkan.ghaffari.inferenceanalyzer.ChatTurn;
+import org.ashkan.ghaffari.inferenceanalyzer.model.ChatTurn;
 
 import java.util.List;
 

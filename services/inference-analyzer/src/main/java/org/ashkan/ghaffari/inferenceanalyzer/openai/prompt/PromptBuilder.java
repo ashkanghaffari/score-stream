@@ -3,11 +3,11 @@ package org.ashkan.ghaffari.inferenceanalyzer.openai.prompt;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ashkan.ghaffari.common.ruleengine.RuleResult;
-import org.ashkan.ghaffari.inferenceanalyzer.ChatTurn;
 import org.ashkan.ghaffari.inferenceanalyzer.openai.config.OpenAIProperties;
-import org.ashkan.ghaffari.inferenceanalyzer.openai.dto.ChatCompletionRequest;
+import org.ashkan.ghaffari.inferenceanalyzer.openai.dto.request.ChatCompletionRequest;
 import org.ashkan.ghaffari.inferenceanalyzer.openai.dto.OpenAIChatMessage;
 import org.ashkan.ghaffari.inferenceanalyzer.openai.dto.request.OpenAIRequest;
+import org.ashkan.ghaffari.inferenceanalyzer.model.ChatTurn;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

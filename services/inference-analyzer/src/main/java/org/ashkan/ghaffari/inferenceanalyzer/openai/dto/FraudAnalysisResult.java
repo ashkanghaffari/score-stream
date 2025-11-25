@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.inferenceanalyzer.openai.dto.response;
+package org.ashkan.ghaffari.inferenceanalyzer.openai.dto;
 
 public record FraudAnalysisResult(
     String analysisId,

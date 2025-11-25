@@ -1,13 +1,13 @@
 package org.ashkan.ghaffari.inferenceanalyzer.openai;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.ashkan.ghaffari.inferenceanalyzer.ConversationContext;
+import org.ashkan.ghaffari.inferenceanalyzer.model.ConversationContext;
 import org.ashkan.ghaffari.inferenceanalyzer.openai.client.OpenAIClient;
 import org.ashkan.ghaffari.inferenceanalyzer.openai.config.OpenAIProperties;
 import org.ashkan.ghaffari.inferenceanalyzer.openai.dto.request.OpenAIRequest;
-import org.ashkan.ghaffari.inferenceanalyzer.openai.dto.response.FraudAnalysisResult;
+import org.ashkan.ghaffari.inferenceanalyzer.openai.dto.FraudAnalysisResult;
 import org.ashkan.ghaffari.inferenceanalyzer.openai.dto.request.Metadata;
-import org.ashkan.ghaffari.inferenceanalyzer.openai.dto.OpenAIResponse;
+import org.ashkan.ghaffari.inferenceanalyzer.openai.dto.response.OpenAIResponse;
 import org.ashkan.ghaffari.inferenceanalyzer.openai.dto.request.Trigger;
 import org.ashkan.ghaffari.inferenceanalyzer.openai.prompt.PromptBuilder;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,7 @@
-package org.ashkan.ghaffari.inferenceanalyzer.openai.dto;
+package org.ashkan.ghaffari.inferenceanalyzer.openai.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.ashkan.ghaffari.inferenceanalyzer.openai.dto.OpenAIChatMessage;
 
 import java.util.List;
 

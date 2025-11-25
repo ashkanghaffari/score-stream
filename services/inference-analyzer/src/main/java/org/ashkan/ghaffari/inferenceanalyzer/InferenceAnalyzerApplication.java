@@ -4,6 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import org.ashkan.ghaffari.inferenceanalyzer.service.InferenceAnalyzer;
+
 import java.util.function.Function;
 
 @SpringBootApplication
