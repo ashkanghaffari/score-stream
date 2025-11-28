@@ -6,11 +6,13 @@ import org.ashkan.ghaffari.inferenceanalyzer.dynamodb.flaggedmessage.FlaggedMess
 import org.ashkan.ghaffari.inferenceanalyzer.model.ChatTurn;
 import org.ashkan.ghaffari.inferenceanalyzer.model.ConversationContext;
 import org.ashkan.ghaffari.inferenceanalyzer.openai.OpenAIService;
+import org.ashkan.ghaffari.inferenceanalyzer.openai.dto.FraudAnalysisResult;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class InferenceAnalyzer {
@@ -34,7 +36,23 @@ public class InferenceAnalyzer {
             .map(this::buildConversationContext)
             .toList();
 
-        openAIService.send(conversationContexts);
+        Map<String, FlaggedMessage> analysisIdToFlaggedMessage = conversationContexts.stream()
+            .collect(Collectors.toMap(
+               ConversationContext::analysisId,
+               ConversationContext::flaggedMessage
+            ));
+
+        List<FraudAnalysisResult> fraudAnalysisResults = openAIService.sendAndParse(conversationContexts);
+        for (FraudAnalysisResult result : fraudAnalysisResults) {
+            flaggedMessageService.updateWithAnalysis(analysisIdToFlaggedMessage.get(result.analysisId()),
+                result.analysisId());
+
+            // TODO: save to database
+        }
+
+
+
+        System.out.print("STOP");
     }
 
     private ConversationContext buildConversationContext(FlaggedMessage flaggedMessage) {

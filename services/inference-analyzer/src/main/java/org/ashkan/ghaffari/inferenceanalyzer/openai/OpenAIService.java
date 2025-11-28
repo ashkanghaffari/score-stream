@@ -1,5 +1,6 @@
 package org.ashkan.ghaffari.inferenceanalyzer.openai;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ashkan.ghaffari.inferenceanalyzer.model.ConversationContext;
 import org.ashkan.ghaffari.inferenceanalyzer.openai.client.OpenAIClient;
@@ -34,6 +35,14 @@ public class OpenAIService {
         this.promptBuilder = promptBuilder;
         this.properties = properties;
         this.mapper = mapper;
+    }
+
+    public List<FraudAnalysisResult> sendAndParse(List<ConversationContext> conversationContexts) {
+        List<OpenAIResponse> responses = send(conversationContexts);
+        return responses.stream()
+            .map(this::parseFirstResult)
+            .flatMap(Optional::stream)
+            .toList();
     }
 
     public List<OpenAIResponse> send(List<ConversationContext> conversationContexts) {
@@ -91,7 +100,7 @@ public class OpenAIService {
         try {
             FraudAnalysisResult result = mapper.readValue(content, FraudAnalysisResult.class);
             return Optional.of(result);
-        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             throw new IllegalStateException("Failed to parse OpenAI fraud analysis JSON", e);
         }
     }
