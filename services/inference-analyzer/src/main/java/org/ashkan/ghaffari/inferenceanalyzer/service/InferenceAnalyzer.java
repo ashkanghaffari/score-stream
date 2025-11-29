@@ -3,6 +3,8 @@ package org.ashkan.ghaffari.inferenceanalyzer.service;
 import org.ashkan.ghaffari.common.dynamo.flaggedmessage.FlaggedMessage;
 import org.ashkan.ghaffari.inferenceanalyzer.dynamodb.chatmessage.ChatMessageService;
 import org.ashkan.ghaffari.inferenceanalyzer.dynamodb.flaggedmessage.FlaggedMessageService;
+import org.ashkan.ghaffari.inferenceanalyzer.dynamodb.fraudanalysis.FraudAnalysisRepository;
+import org.ashkan.ghaffari.inferenceanalyzer.dynamodb.fraudanalysis.FraudAnalysisService;
 import org.ashkan.ghaffari.inferenceanalyzer.model.ChatTurn;
 import org.ashkan.ghaffari.inferenceanalyzer.model.ConversationContext;
 import org.ashkan.ghaffari.inferenceanalyzer.openai.OpenAIService;
@@ -20,13 +22,15 @@ public class InferenceAnalyzer {
     private final FlaggedMessageService flaggedMessageService;
     private final ChatMessageService chatMessageService;
     private final OpenAIService openAIService;
+    private final FraudAnalysisService fraudAnalysisService;
 
     public InferenceAnalyzer(FlaggedMessageService flaggedMessageService,
                              ChatMessageService chatMessageService,
-                             OpenAIService openAIService) {
+                             OpenAIService openAIService, FraudAnalysisService fraudAnalysisService) {
         this.flaggedMessageService = flaggedMessageService;
         this.chatMessageService = chatMessageService;
         this.openAIService = openAIService;
+        this.fraudAnalysisService = fraudAnalysisService;
     }
 
     public void analyze() {
@@ -44,10 +48,11 @@ public class InferenceAnalyzer {
 
         List<FraudAnalysisResult> fraudAnalysisResults = openAIService.sendAndParse(conversationContexts);
         for (FraudAnalysisResult result : fraudAnalysisResults) {
-            flaggedMessageService.updateWithAnalysis(analysisIdToFlaggedMessage.get(result.analysisId()),
+            FlaggedMessage flaggedMessage = analysisIdToFlaggedMessage.get(result.analysisId());
+            flaggedMessageService.updateWithAnalysis(flaggedMessage,
                 result.analysisId());
 
-            // TODO: save to database
+            fraudAnalysisService.saveFraudAnalysis(result, flaggedMessage);
         }
 
 

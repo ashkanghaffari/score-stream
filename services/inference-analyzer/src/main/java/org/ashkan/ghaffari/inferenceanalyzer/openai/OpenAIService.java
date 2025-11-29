@@ -98,8 +98,20 @@ public class OpenAIService {
             return Optional.empty();
         }
         try {
-            FraudAnalysisResult result = mapper.readValue(content, FraudAnalysisResult.class);
-            return Optional.of(result);
+            FraudAnalysisResult parsed = mapper.readValue(content, FraudAnalysisResult.class);
+            FraudAnalysisResult enriched = new FraudAnalysisResult(
+                parsed.analysisId(),
+                parsed.scamLikely(),
+                parsed.threatLevel(),
+                parsed.scammerUserId(),
+                parsed.victimUserId(),
+                parsed.scamType(),
+                parsed.summary(),
+                parsed.recommendation(),
+                response.model(),
+                response.id()
+            );
+            return Optional.of(enriched);
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Failed to parse OpenAI fraud analysis JSON", e);
         }
