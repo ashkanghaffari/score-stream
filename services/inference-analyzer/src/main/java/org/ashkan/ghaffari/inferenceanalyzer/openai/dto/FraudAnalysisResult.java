@@ -8,5 +8,7 @@ public record FraudAnalysisResult(
     String victimUserId,
     String scamType,
     String summary,
-    String recommendation
+    String recommendation,
+    String modelName,
+    String responseId
 ) {}

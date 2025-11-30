@@ -34,4 +34,8 @@ public class FlaggedMessageRepository {
 
         return pages.items().stream().toList();
     }
+
+    public void update(FlaggedMessage updated) {
+        table.updateItem(updated);
+    }
 }
