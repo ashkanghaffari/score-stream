@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 @Service
 public class OpenAIService {
@@ -26,15 +28,18 @@ public class OpenAIService {
     private final PromptBuilder promptBuilder;
     private final OpenAIProperties properties;
     private final ObjectMapper mapper;
+    private final ExecutorService openAIExecutorService;
 
     public OpenAIService(OpenAIClient openAIClient,
                          PromptBuilder promptBuilder,
                          OpenAIProperties properties,
-                         ObjectMapper mapper) {
+                         ObjectMapper mapper,
+                         ExecutorService openAIExecutorService) {
         this.openAIClient = openAIClient;
         this.promptBuilder = promptBuilder;
         this.properties = properties;
         this.mapper = mapper;
+        this.openAIExecutorService = openAIExecutorService;
     }
 
     public List<FraudAnalysisResult> sendAndParse(List<ConversationContext> conversationContexts) {
@@ -47,11 +52,22 @@ public class OpenAIService {
 
     public List<OpenAIResponse> send(List<ConversationContext> conversationContexts) {
         ensureApiKeyPresent();
-        List<OpenAIResponse> responses = new ArrayList<>(conversationContexts.size());
+        List<Future<OpenAIResponse>> futures = new ArrayList<>();
         for (ConversationContext context : conversationContexts) {
             OpenAIRequest request = toRequest(context);
-            responses.add(callOpenAI(request));
+            futures.add(openAIExecutorService.submit(() -> callOpenAI(request)));
         }
+
+        List<OpenAIResponse> responses = new ArrayList<>(futures.size());
+
+        for (Future<OpenAIResponse> future : futures) {
+            try {
+                responses.add(future.get());
+            } catch (Exception ex) {
+                throw new RuntimeException("OpenAI inference failed in parallel execution", ex);
+            }
+        }
+
         return responses;
     }
 
@@ -112,8 +128,8 @@ public class OpenAIService {
                 response.id()
             );
             return Optional.of(enriched);
-        } catch (JsonProcessingException e) {
-            throw new IllegalStateException("Failed to parse OpenAI fraud analysis JSON", e);
+        } catch (JsonProcessingException ex) {
+            throw new IllegalStateException("Failed to parse OpenAI fraud analysis JSON", ex);
         }
     }
 
