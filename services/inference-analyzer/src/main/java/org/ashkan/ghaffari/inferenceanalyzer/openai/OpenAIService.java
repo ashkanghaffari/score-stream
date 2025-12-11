@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 @Service
 public class OpenAIService {
@@ -34,7 +35,7 @@ public class OpenAIService {
                          PromptBuilder promptBuilder,
                          OpenAIProperties properties,
                          ObjectMapper mapper,
-                         ExecutorService openAIExecutorService) {
+                         @Qualifier("openAIExecutorService") ExecutorService openAIExecutorService) {
         this.openAIClient = openAIClient;
         this.promptBuilder = promptBuilder;
         this.properties = properties;
