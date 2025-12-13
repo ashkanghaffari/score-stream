@@ -19,7 +19,10 @@ public class FlaggedMessageService {
 
     public void updateWithAnalysis(FlaggedMessage flaggedMessage, String analysisId) {
         FlaggedMessage update = new FlaggedMessage(
+            flaggedMessage.getTenantId(),
+            flaggedMessage.getAppId(),
             flaggedMessage.getChatId(),
+            flaggedMessage.getChatScopeKey(),
             flaggedMessage.getTimestamp(),
             flaggedMessage.getMessageId(),
             flaggedMessage.getSenderId(),

@@ -10,6 +10,8 @@ import java.util.UUID;
 public record FlaggedMessage(
     UUID messageId,
     String idempotencyId,
+    String tenantId,
+    String appId,
     String chatId,
     String senderId,
     Instant timestamp,
@@ -17,4 +19,4 @@ public record FlaggedMessage(
     String decision,
     List<RuleResult> triggeredRules,
     JsonNode payload
-) implements ChatMessagePayload {}
+) {}

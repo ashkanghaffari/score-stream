@@ -26,9 +26,13 @@ public class ChatMessageService {
             mapper.convertValue(chatTextMessage.payload(), new TypeReference<>() {});
 
         try {
+            String scopeKey = buildScopeKey(chatTextMessage.tenantId(), chatTextMessage.appId(), chatTextMessage.chatId());
             chatMessageRepository.save(
                 new ChatMessage(
+                    chatTextMessage.tenantId(),
+                    chatTextMessage.appId(),
                     chatTextMessage.chatId(),
+                    scopeKey,
                     chatTextMessage.timestamp().toEpochMilli(),
                     chatTextMessage.id().toString(),
                     chatTextMessage.senderId(),
@@ -38,6 +42,10 @@ public class ChatMessageService {
         } catch (UnsupportedOperationException ex) {
             log.error("Failed to save message to DynamoDB: {}", ex.getMessage());
         }
+    }
+
+    private String buildScopeKey(String tenantId, String appId, String chatId) {
+        return tenantId + ":" + appId + ":" + chatId;
     }
 
 

@@ -18,9 +18,9 @@ public class ChatMessageService {
         this.chatMessageRepository = chatMessageRepository;
     }
 
-    public List<ChatMessage> getWindow(String chatId, long ts, FlaggedMessage flaggedMessage) {
-        List<ChatMessage> before = chatMessageRepository.findBefore(chatId, ts, WINDOW_SIZE);
-        List<ChatMessage> after = chatMessageRepository.findAfter(chatId, ts, WINDOW_SIZE);
+    public List<ChatMessage> getWindow(String chatScopeKey, long ts, FlaggedMessage flaggedMessage) {
+        List<ChatMessage> before = chatMessageRepository.findBefore(chatScopeKey, ts, WINDOW_SIZE);
+        List<ChatMessage> after = chatMessageRepository.findAfter(chatScopeKey, ts, WINDOW_SIZE);
 
         List<ChatMessage> window = new ArrayList<>();
         window.addAll(before);
@@ -32,7 +32,10 @@ public class ChatMessageService {
 
     private ChatMessage toChatMessage(FlaggedMessage f) {
         return new ChatMessage(
+            f.getTenantId(),
+            f.getAppId(),
             f.getChatId(),
+            f.getChatScopeKey(),
             f.getTimestamp(),
             f.getMessageId(),
             f.getSenderId(),

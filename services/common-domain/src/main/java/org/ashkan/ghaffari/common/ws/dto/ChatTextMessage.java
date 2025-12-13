@@ -9,8 +9,10 @@ public record ChatTextMessage(
    UUID id,
    String idempotencyId,
    MessageType type,
+   String tenantId,
+   String appId,
    String chatId,
    String senderId,
    Instant timestamp,
    JsonNode payload
-) implements ChatMessagePayload {}
+) {}

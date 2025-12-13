@@ -3,6 +3,7 @@ package org.ashkan.ghaffari.ingestor.ws.handler.outbound;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ashkan.ghaffari.common.ws.dto.ChatTextMessage;
 import org.ashkan.ghaffari.ingestor.ws.SessionRegistry;
+import org.ashkan.ghaffari.ingestor.ws.ChatIdHandshakeInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -35,7 +36,9 @@ public class PublishWebSocketHandler {
     }
 
     private void fanOutMessage(ChatTextMessage message) throws IOException {
-        Set<WebSocketSession> sessions = sessionRegistry.all(message.chatId());
+        String scopeKey = ChatIdHandshakeInterceptor.buildScopeKey(
+            message.tenantId(), message.appId(), message.chatId());
+        Set<WebSocketSession> sessions = sessionRegistry.all(scopeKey);
         for (WebSocketSession session : sessions) {
             try {
                 session.sendMessage(new TextMessage(message.toString()));
