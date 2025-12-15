@@ -43,7 +43,7 @@ public class RuleEngineConsumer {
     public void onMessage(byte[] data) throws IOException {
         ChatTextMessage message = mapper.readValue(data, ChatTextMessage.class);
         String textValue = extractPayloadText(message.payload());
-        EvaluationResult evaluationResult = textEvalResult(textValue);
+        EvaluationResult evaluationResult = textEvalResult(textValue, message.tenantId());
 
         if (!"ALLOW".equalsIgnoreCase(evaluationResult.decision())) {
             FlaggedMessage flaggedMessage = new FlaggedMessage(
@@ -65,12 +65,12 @@ public class RuleEngineConsumer {
         sendMessageToKafka(message, CLEAN_TOPIC);
     }
 
-    public EvaluationResult textEvalResult(String raw) {
+    public EvaluationResult textEvalResult(String raw, String tenantId) {
         Objects.requireNonNull(raw, "raw input cannot be null");
         try {
             ProcessedTextResult processedTextResult = textProcessor.process(raw);
             Objects.requireNonNull(processedTextResult, "processTextResult cannot be null");
-            return ruleEngine.evaluate(processedTextResult.normalizedText());
+            return ruleEngine.evaluate(processedTextResult.normalizedText(), tenantId);
         } catch (Exception ex) {
             throw new IllegalStateException("Failed to process text for rule evaluation", ex);
         }

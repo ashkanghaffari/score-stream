@@ -2,12 +2,14 @@ package org.ashkan.ghaffari.common.dynamo.ruleconfig;
 
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 
 import java.util.List;
 
 @DynamoDbBean
 public class RuleConfig {
 
+    private String tenantId;
     private String ruleId;
     private String name;
     private String type;
@@ -18,6 +20,10 @@ public class RuleConfig {
     private String description;
 
     @DynamoDbPartitionKey
+    public String getTenantId() { return tenantId; }
+    public void setTenantId(String tenantId) { this.tenantId = tenantId; }
+
+    @DynamoDbSortKey
     public String getRuleId() { return ruleId; }
     public void setRuleId(String ruleId) { this.ruleId = ruleId; }
 
