@@ -47,5 +47,3 @@ management:
 logging:
   level:
     root: ${LOG_LEVEL_ROOT:INFO}
-    org.apache.kafka: INFO
-    org.springframework.kafka: INFO
