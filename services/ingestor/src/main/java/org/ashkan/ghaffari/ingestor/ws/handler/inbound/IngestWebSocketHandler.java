@@ -83,7 +83,8 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
                 return;
             }
 
-            if (!idempotencyRepository.tryStore(incoming.idempotencyId())) {
+            String tenantIdempotencyId = incoming.tenantId() + ":" + incoming.appId() + ":" + incoming.idempotencyId();
+            if (!idempotencyRepository.tryStore(tenantIdempotencyId)) {
                 log.debug("Duplicate message, rejecting processing");
                 sendError(session, "Duplicate idempotency key");
                 return;
