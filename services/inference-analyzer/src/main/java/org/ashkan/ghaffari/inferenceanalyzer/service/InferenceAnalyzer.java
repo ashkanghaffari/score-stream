@@ -71,11 +71,12 @@ public class InferenceAnalyzer {
     }
 
     private ConversationContext buildConversationContext(FlaggedMessage flaggedMessage) {
+        String chatScopeKey = flaggedMessage.getChatScopeKey();
         List<ChatTurn> turns = chatMessageService.getWindow(
-                flaggedMessage.getChatId(),
-                flaggedMessage.getTimestamp(),
-                flaggedMessage
-            ).stream()
+            chatScopeKey,
+            flaggedMessage.getTimestamp(),
+            flaggedMessage
+        ).stream()
             .map(chatMessage -> new ChatTurn(
                 chatMessage.getSenderId(),
                 chatMessage.getTimestamp(),

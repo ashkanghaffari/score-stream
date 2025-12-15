@@ -36,8 +36,8 @@ public class SessionRegistry {
         return chatSessions.getOrDefault(chatId, Collections.emptySet());
     }
 
-    public String getChatId(WebSocketSession session) {
-        return (String) session.getAttributes().get(ChatIdHandshakeInterceptor.CHAT_ID_ATTR);
+    public String getChatScopeKey(WebSocketSession session) {
+        return (String) session.getAttributes().get(ChatIdHandshakeInterceptor.CHAT_SCOPE_KEY_ATTR);
     }
 
 }

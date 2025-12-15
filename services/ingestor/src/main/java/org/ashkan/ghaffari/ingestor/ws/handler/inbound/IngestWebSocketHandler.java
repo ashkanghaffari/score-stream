@@ -7,6 +7,7 @@ import org.ashkan.ghaffari.common.ws.dto.ChatTextMessage;
 import org.ashkan.ghaffari.common.ws.dto.IngestMessage;
 import org.ashkan.ghaffari.common.ws.dto.MessageType;
 import org.ashkan.ghaffari.ingestor.redis.IdempotencyRepository;
+import org.ashkan.ghaffari.ingestor.ws.ChatIdHandshakeInterceptor;
 import org.ashkan.ghaffari.ingestor.ws.SessionRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,9 +45,9 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         session.setTextMessageSizeLimit(MAX_TEXT_SIZE);
-        String chatId = sessionRegistry.getChatId(session);
-        if (chatId == null) {
-            log.warn("Closing WebSocket {} due to missing chatId attribute", session.getId());
+        String chatScopeKey = sessionRegistry.getChatScopeKey(session);
+        if (chatScopeKey == null) {
+            log.warn("Closing WebSocket {} due to missing chatScopeKey attribute", session.getId());
             try {
                 session.close(CloseStatus.BAD_DATA);
             } catch (IOException e) {
@@ -55,8 +56,8 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
             return;
         }
 
-        sessionRegistry.registerSession(chatId, session);
-        log.info("WebSocket connected: {} (chatId={})", session.getId(), chatId);
+        sessionRegistry.registerSession(chatScopeKey, session);
+        log.info("WebSocket connected: {} (chatScopeKey={})", session.getId(), chatScopeKey);
     }
 
     @Override
@@ -69,14 +70,16 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
         try {
             IngestMessage incoming = mapper.readValue(json, IngestMessage.class);
 
-            if (!incoming.chatId().equals(sessionRegistry.getChatId(session))) {
-                sendError(session, "Invalid chatId");
+            if (incoming.idempotencyId() == null || incoming.tenantId() == null || incoming.appId() == null ||
+                incoming.chatId() == null || incoming.senderId() == null || incoming.type() == null) {
+                sendError(session, "Missing required fields");
                 return;
             }
 
-            if (incoming.idempotencyId() == null || incoming.chatId() == null || incoming.senderId() == null
-                || incoming.type() == null) {
-                sendError(session, "Missing required fields");
+            String incomingChatScopeKey = ChatIdHandshakeInterceptor.buildScopeKey(
+                incoming.tenantId(), incoming.appId(), incoming.chatId());
+            if (!incomingChatScopeKey.equals(sessionRegistry.getChatScopeKey(session))) {
+                sendError(session, "Invalid chatScopeKey");
                 return;
             }
 
@@ -104,6 +107,8 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
                 UUID.randomUUID(),
                 incoming.idempotencyId(),
                 incoming.type(),
+                incoming.tenantId(),
+                incoming.appId(),
                 incoming.chatId(),
                 incoming.senderId(),
                 Instant.now(),
@@ -112,7 +117,11 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
 
             try {
                 byte[] serialized = mapper.writeValueAsBytes(chatTextMessage);
-                kafka.send(RAW_TOPIC, chatTextMessage.chatId(), serialized)
+                kafka.send(RAW_TOPIC,
+                    ChatIdHandshakeInterceptor.buildScopeKey(
+                        chatTextMessage.tenantId(), chatTextMessage.appId(), chatTextMessage.chatId()
+                    ),
+                    serialized)
                     .whenComplete((res, ex) -> {
                         if (ex != null) {
                             log.warn("Kafka send failed for topic {}: {}", RAW_TOPIC, ex.toString());

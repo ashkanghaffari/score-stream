@@ -3,7 +3,6 @@ package org.ashkan.ghaffari.ingestor.ruleengine;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.ashkan.ghaffari.common.ws.dto.ChatMessagePayload;
 import org.ashkan.ghaffari.common.ws.dto.ChatTextMessage;
 import org.ashkan.ghaffari.common.ws.dto.FlaggedMessage;
 import org.ashkan.ghaffari.ingestor.ruleengine.sanitation.ProcessedTextResult;
@@ -50,6 +49,8 @@ public class RuleEngineConsumer {
             FlaggedMessage flaggedMessage = new FlaggedMessage(
                 message.id(),
                 message.idempotencyId(),
+                message.tenantId(),
+                message.appId(),
                 message.chatId(),
                 message.senderId(),
                 message.timestamp(),
@@ -84,17 +85,36 @@ public class RuleEngineConsumer {
         return value != null ? value.trim() : null;
     }
 
-    private void sendMessageToKafka(ChatMessagePayload payload, String topic) {
+    private void sendMessageToKafka(ChatTextMessage message, String topic) {
         try {
-            byte[] serialized = mapper.writeValueAsBytes(payload);
-            kafka.send(topic, payload.chatId(), serialized)
-                .whenComplete((res, ex) -> {
-                    if (ex != null) {
-                        log.warn("Kafka send failed for topic {}: {}", topic, ex.toString());
-                    }
-                });
+            byte[] serialized = mapper.writeValueAsBytes(message);
+            String scopeKey = buildScopeKey(message.tenantId(), message.appId(), message.chatId());
+            sendMessageToKafka(serialized, topic, scopeKey);
         } catch (JsonProcessingException ex) {
             throw new IllegalStateException("Failed to serialize payload for topic " + topic, ex);
         }
+    }
+
+    private void sendMessageToKafka(FlaggedMessage message, String topic) {
+        try {
+            byte[] serialized = mapper.writeValueAsBytes(message);
+            String scopeKey = buildScopeKey(message.tenantId(), message.appId(), message.chatId());
+            sendMessageToKafka(serialized, topic, scopeKey);
+        } catch (JsonProcessingException ex) {
+            throw new IllegalStateException("Failed to serialize payload for topic " + topic, ex);
+        }
+    }
+
+    private void sendMessageToKafka(byte[] serializedPayload, String topic, String key) {
+        kafka.send(topic, key, serializedPayload)
+            .whenComplete((res, ex) -> {
+                if (ex != null) {
+                    log.warn("Kafka send failed for topic {}: {}", topic, ex.toString());
+                }
+            });
+    }
+
+    public static String buildScopeKey(String tenantId, String appId, String chatId) {
+        return tenantId + ":" + appId + ":" + chatId;
     }
 }

@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 public record IngestMessage(
     String idempotencyId,
     MessageType type,
+    String tenantId,
+    String appId,
     String chatId,
     String senderId,
     JsonNode payload
@@ -20,6 +22,12 @@ public record IngestMessage(
         }
         if (type != MessageType.TEXT) {
             throw new IllegalArgumentException("Unsupported event type: " + type);
+        }
+        if (tenantId == null || tenantId.isBlank()) {
+            throw new IllegalArgumentException("tenantId is required");
+        }
+        if (appId == null || appId.isBlank()) {
+            throw new IllegalArgumentException("appId is required");
         }
         if (chatId == null || chatId.isBlank()) {
             throw new IllegalArgumentException("chatId is required");

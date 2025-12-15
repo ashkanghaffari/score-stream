@@ -26,9 +26,13 @@ public class FlaggedMessageService {
             mapper.convertValue(flaggedMessage.payload(), new TypeReference<>() {});
 
         try {
+            String scopeKey = buildScopeKey(flaggedMessage.tenantId(), flaggedMessage.appId(), flaggedMessage.chatId());
             repository.save(
                 new org.ashkan.ghaffari.common.dynamo.flaggedmessage.FlaggedMessage(
+                    flaggedMessage.tenantId(),
+                    flaggedMessage.appId(),
                     flaggedMessage.chatId(),
+                    scopeKey,
                     flaggedMessage.timestamp().toEpochMilli(),
                     flaggedMessage.messageId().toString(),
                     flaggedMessage.senderId(),
@@ -43,5 +47,9 @@ public class FlaggedMessageService {
         } catch (UnsupportedOperationException ex) {
             log.error("Failed to save flagged message to DynamoDB: {}", ex.getMessage());
         }
+    }
+
+    private String buildScopeKey(String tenantId, String appId, String chatId) {
+        return tenantId + ":" + appId + ":" + chatId;
     }
 }

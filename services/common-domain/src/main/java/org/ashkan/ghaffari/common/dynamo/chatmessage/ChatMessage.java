@@ -10,6 +10,9 @@ import java.util.Map;
 @DynamoDbBean
 public class ChatMessage {
 
+    private String tenantId;
+    private String appId;
+    private String chatScopeKey;
     private String chatId;
     private Long timestamp;
     private String messageId;
@@ -18,8 +21,12 @@ public class ChatMessage {
 
     public ChatMessage() {}
 
-    public ChatMessage(String chatId, Long timestamp, String messageId, String senderId,
+    public ChatMessage(String tenantId, String appId, String chatId, String chatScopeKey,
+                       Long timestamp, String messageId, String senderId,
                        Map<String, Object> payload) {
+        this.tenantId = tenantId;
+        this.appId = appId;
+        this.chatScopeKey = chatScopeKey;
         this.chatId = chatId;
         this.timestamp = timestamp;
         this.messageId = messageId;
@@ -28,6 +35,15 @@ public class ChatMessage {
     }
 
     @DynamoDbPartitionKey
+    public String getChatScopeKey() { return chatScopeKey; }
+    public void setChatScopeKey(String chatScopeKey) { this.chatScopeKey = chatScopeKey; }
+
+    public String getTenantId() { return tenantId; }
+    public void setTenantId(String tenantId) { this.tenantId = tenantId; }
+
+    public String getAppId() { return appId; }
+    public void setAppId(String appId) { this.appId = appId; }
+
     public String getChatId() { return chatId; }
     public void setChatId(String chatId) { this.chatId = chatId; }
 

@@ -13,6 +13,9 @@ import java.util.Map;
 @DynamoDbBean
 public class FlaggedMessage {
 
+    private String tenantId;
+    private String appId;
+    private String chatScopeKey;
     private String chatId;
     private Long timestamp;
     private String messageId;
@@ -26,9 +29,13 @@ public class FlaggedMessage {
 
     public FlaggedMessage() {}
 
-    public FlaggedMessage(String chatId, Long timestamp, String messageId, String senderId, Map<String, Object> payload,
+    public FlaggedMessage(String tenantId, String appId, String chatId, String chatScopeKey,
+                          Long timestamp, String messageId, String senderId, Map<String, Object> payload,
                           int totalScore, String decision, List<RuleResult> triggeredRules, boolean analyzed,
                           String analysisId) {
+        this.tenantId = tenantId;
+        this.appId = appId;
+        this.chatScopeKey = chatScopeKey;
         this.chatId = chatId;
         this.timestamp = timestamp;
         this.messageId = messageId;
@@ -42,6 +49,15 @@ public class FlaggedMessage {
     }
 
     @DynamoDbPartitionKey
+    public String getChatScopeKey() { return chatScopeKey; }
+    public void setChatScopeKey(String chatScopeKey) { this.chatScopeKey = chatScopeKey; }
+
+    public String getTenantId() { return tenantId; }
+    public void setTenantId(String tenantId) { this.tenantId = tenantId; }
+
+    public String getAppId() { return appId; }
+    public void setAppId(String appId) { this.appId = appId; }
+
     public String getChatId() { return chatId; }
     public void setChatId(String chatId) { this.chatId = chatId; }
 

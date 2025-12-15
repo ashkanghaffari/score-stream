@@ -23,10 +23,10 @@ public class ChatMessageRepository {
             TableSchema.fromBean(ChatMessage.class));
     }
 
-    public List<ChatMessage> findBefore(String chatId, long ts, int limit) {
+    public List<ChatMessage> findBefore(String chatScopeKey, long ts, int limit) {
         QueryConditional beforeCond = QueryConditional.sortLessThan(
             Key.builder()
-                .partitionValue(chatId)
+                .partitionValue(chatScopeKey)
                 .sortValue(ts)
                 .build()
         );
@@ -43,10 +43,10 @@ public class ChatMessageRepository {
         return items;
     }
 
-    public List<ChatMessage> findAfter(String chatId, long ts, int limit) {
+    public List<ChatMessage> findAfter(String chatScopeKey, long ts, int limit) {
         QueryConditional afterCond = QueryConditional.sortGreaterThan(
             Key.builder()
-                .partitionValue(chatId)
+                .partitionValue(chatScopeKey)
                 .sortValue(ts)
                 .build()
         );
