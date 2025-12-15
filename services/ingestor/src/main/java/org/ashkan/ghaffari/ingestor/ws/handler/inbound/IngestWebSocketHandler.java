@@ -8,6 +8,7 @@ import org.ashkan.ghaffari.common.ws.dto.IngestMessage;
 import org.ashkan.ghaffari.common.ws.dto.MessageType;
 import org.ashkan.ghaffari.ingestor.redis.IdempotencyRepository;
 import org.ashkan.ghaffari.ingestor.ws.ChatIdHandshakeInterceptor;
+import org.ashkan.ghaffari.ingestor.logging.LoggingContext;
 import org.ashkan.ghaffari.ingestor.ws.SessionRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,33 +105,42 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
                 }
             }
 
-            ChatTextMessage chatTextMessage = new ChatTextMessage(
-                UUID.randomUUID(),
-                incoming.idempotencyId(),
-                incoming.type(),
-                incoming.tenantId(),
-                incoming.appId(),
-                incoming.chatId(),
-                incoming.senderId(),
-                Instant.now(),
-                incoming.payload()
-            );
+        ChatTextMessage chatTextMessage = new ChatTextMessage(
+            UUID.randomUUID(),
+            incoming.idempotencyId(),
+            incoming.type(),
+            incoming.tenantId(),
+            incoming.appId(),
+            incoming.chatId(),
+            incoming.senderId(),
+            Instant.now(),
+            incoming.payload()
+        );
 
-            try {
-                byte[] serialized = mapper.writeValueAsBytes(chatTextMessage);
-                kafka.send(RAW_TOPIC,
-                    ChatIdHandshakeInterceptor.buildScopeKey(
-                        chatTextMessage.tenantId(), chatTextMessage.appId(), chatTextMessage.chatId()
-                    ),
-                    serialized)
-                    .whenComplete((res, ex) -> {
-                        if (ex != null) {
-                            log.warn("Kafka send failed for topic {}: {}", RAW_TOPIC, ex.toString());
-                        }
-                    });
-            } catch (JsonProcessingException ex) {
-                throw new IllegalStateException("Failed to serialize payload for topic " + RAW_TOPIC, ex);
+        LoggingContext.withContext(
+            chatTextMessage.tenantId(),
+            chatTextMessage.appId(),
+            chatTextMessage.chatId(),
+            chatTextMessage.id().toString(),
+            chatTextMessage.idempotencyId(),
+            () -> {
+                try {
+                    byte[] serialized = mapper.writeValueAsBytes(chatTextMessage);
+                    kafka.send(RAW_TOPIC,
+                        ChatIdHandshakeInterceptor.buildScopeKey(
+                            chatTextMessage.tenantId(), chatTextMessage.appId(), chatTextMessage.chatId()
+                        ),
+                        serialized)
+                        .whenComplete((res, ex) -> {
+                            if (ex != null) {
+                                log.warn("Kafka send failed for topic {}: {}", RAW_TOPIC, ex.toString(), ex);
+                            }
+                        });
+                } catch (JsonProcessingException ex) {
+                    throw new IllegalStateException("Failed to serialize payload for topic " + RAW_TOPIC, ex);
+                }
             }
+        );
 
         } catch (Exception e) {
             log.error("Failed to process message for sessionId: {}: {}", session.getId(), e.toString());

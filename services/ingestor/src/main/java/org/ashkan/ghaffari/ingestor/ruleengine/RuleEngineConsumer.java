@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ashkan.ghaffari.common.ws.dto.ChatTextMessage;
 import org.ashkan.ghaffari.common.ws.dto.FlaggedMessage;
+import org.ashkan.ghaffari.ingestor.logging.LoggingContext;
 import org.ashkan.ghaffari.ingestor.ruleengine.sanitation.ProcessedTextResult;
 import org.ashkan.ghaffari.ingestor.ruleengine.sanitation.TextProcessor;
 import org.slf4j.Logger;
@@ -42,27 +43,36 @@ public class RuleEngineConsumer {
     @KafkaListener(topics = RAW_TOPIC, groupId = RULE_ENGINE_CONSUMER_GROUP_ID)
     public void onMessage(byte[] data) throws IOException {
         ChatTextMessage message = mapper.readValue(data, ChatTextMessage.class);
-        String textValue = extractPayloadText(message.payload());
-        EvaluationResult evaluationResult = textEvalResult(textValue, message.tenantId());
+        LoggingContext.withContext(
+            message.tenantId(),
+            message.appId(),
+            message.chatId(),
+            message.id().toString(),
+            message.idempotencyId(),
+            () -> {
+                String textValue = extractPayloadText(message.payload());
+                EvaluationResult evaluationResult = textEvalResult(textValue, message.tenantId());
 
-        if (!"ALLOW".equalsIgnoreCase(evaluationResult.decision())) {
-            FlaggedMessage flaggedMessage = new FlaggedMessage(
-                message.id(),
-                message.idempotencyId(),
-                message.tenantId(),
-                message.appId(),
-                message.chatId(),
-                message.senderId(),
-                message.timestamp(),
-                evaluationResult.totalScore(),
-                evaluationResult.decision(),
-                evaluationResult.triggered(),
-                message.payload()
-            );
-            sendMessageToKafka(flaggedMessage, FLAGGED_TOPIC);
+                if (!"ALLOW".equalsIgnoreCase(evaluationResult.decision())) {
+                    FlaggedMessage flaggedMessage = new FlaggedMessage(
+                        message.id(),
+                        message.idempotencyId(),
+                        message.tenantId(),
+                        message.appId(),
+                        message.chatId(),
+                        message.senderId(),
+                        message.timestamp(),
+                        evaluationResult.totalScore(),
+                        evaluationResult.decision(),
+                        evaluationResult.triggered(),
+                        message.payload()
+                    );
+                    sendMessageToKafka(flaggedMessage, FLAGGED_TOPIC);
+                }
+
+                sendMessageToKafka(message, CLEAN_TOPIC);
             }
-
-        sendMessageToKafka(message, CLEAN_TOPIC);
+        );
     }
 
     public EvaluationResult textEvalResult(String raw, String tenantId) {
