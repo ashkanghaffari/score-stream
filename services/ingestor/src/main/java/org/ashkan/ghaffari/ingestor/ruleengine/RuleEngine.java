@@ -6,18 +6,22 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class RuleEngine {
-    private volatile List<Rule> rules = List.of();
+    private volatile Map<String, List<Rule>> rulesByTenant;
 
-    public void loadRules(List<Rule> newRules) {
-        this.rules = newRules;
+    public void loadRules(Map<String, List<Rule>> newRules) {
+        this.rulesByTenant = newRules;
     }
 
-    public EvaluationResult evaluate(String text) {
+    public EvaluationResult evaluate(String text, String tenantId) {
         int total = 0;
         List<RuleResult> triggered = new ArrayList<>();
+        List<Rule> rules = rulesByTenant != null
+            ? rulesByTenant.getOrDefault(tenantId, List.of())
+            : List.of();
 
         for (Rule rule : rules) {
             var result = rule.evaluate(text);

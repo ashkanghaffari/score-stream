@@ -7,6 +7,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class RuleLoader implements CommandLineRunner {
@@ -23,11 +25,25 @@ public class RuleLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        List<RuleConfig> configs = repo.loadAll();
-        List<Rule> rules = configs.stream()
-            .map(ruleFactory::build)
-            .toList();
-        engine.loadRules(rules);
-        System.out.printf("Loaded %d rules from DynamoDB%n", rules.size());
+        Map<String, List<Rule>> rulesByTenant = getRuleConfigs();
+        engine.loadRules(rulesByTenant);
+
+        int totalRules = rulesByTenant.values().stream()
+            .mapToInt(List::size)
+            .sum();
+
+        System.out.printf("Loaded %d rules from DynamoDB%n", totalRules);
+    }
+
+    public void reload() {
+        engine.loadRules(getRuleConfigs());
+    }
+
+    private Map<String, List<Rule>> getRuleConfigs() {
+        return repo.loadAll().stream()
+            .collect(Collectors.groupingBy(
+                RuleConfig::getTenantId,
+                Collectors.mapping(ruleFactory::build, Collectors.toList())
+            ));
     }
 }
