@@ -33,7 +33,9 @@ public class FraudAnalysisService {
             fraudAnalysisResult.summary(),
             fraudAnalysisResult.recommendation(),
             fraudAnalysisResult.modelName(),
-            fraudAnalysisResult.responseId()
+            fraudAnalysisResult.responseId(),
+            flaggedMessage.getTenantId(),
+            flaggedMessage.getAppId()
         );
 
         repository.save(fraudAnalysis);
