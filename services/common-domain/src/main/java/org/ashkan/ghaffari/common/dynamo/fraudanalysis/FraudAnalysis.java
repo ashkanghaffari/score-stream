@@ -19,13 +19,16 @@ public class FraudAnalysis {
     private String recommendation;
     private String modelName;
     private String responseId;
+    private String tenantId;
+    private String appId;
 
     public FraudAnalysis() {}
 
     public FraudAnalysis(String analysisId, Long timestamp, String flaggedMessageId,
                          boolean scamLikely, String threatLevel, String scammerUserId,
                          String victimUserId, String scamType, String summary,
-                         String recommendation, String modelName, String responseId) {
+                         String recommendation, String modelName, String responseId,
+                         String tenantId, String appId) {
         this.analysisId = analysisId;
         this.timestamp = timestamp;
         this.flaggedMessageId = flaggedMessageId;
@@ -38,6 +41,8 @@ public class FraudAnalysis {
         this.recommendation = recommendation;
         this.modelName = modelName;
         this.responseId = responseId;
+        this.tenantId = tenantId;
+        this.appId = appId;
     }
 
     @DynamoDbPartitionKey
@@ -77,4 +82,10 @@ public class FraudAnalysis {
 
     public String getResponseId() { return responseId; }
     public void setResponseId(String responseId) { this.responseId = responseId; }
+
+    public String getTenantId() { return tenantId; }
+    public void setTenantId(String tenantId) { this.tenantId = tenantId; }
+
+    public String getAppId() { return appId; }
+    public void setAppId(String appId) { this.appId = appId; }
 }
