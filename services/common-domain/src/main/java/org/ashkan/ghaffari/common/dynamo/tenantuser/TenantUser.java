@@ -1,5 +1,7 @@
 package org.ashkan.ghaffari.common.dynamo.tenantuser;
 
+import org.ashkan.ghaffari.common.adminconsole.TenantUserRole;
+import org.ashkan.ghaffari.common.adminconsole.TenantUserStatus;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
@@ -11,14 +13,14 @@ public class TenantUser {
     private String tenantId;
     private String userId;
     private String email;
-    private String role;
-    private String status;
+    private TenantUserRole role;
+    private TenantUserStatus status;
     private Long createdAt;
 
     public TenantUser() {}
 
     public TenantUser(String tenantId, String userId, String email,
-                      String role, String status, Long createdAt) {
+                      TenantUserRole role, TenantUserStatus status, Long createdAt) {
         this.tenantId = tenantId;
         this.userId = userId;
         this.email = email;
@@ -39,11 +41,11 @@ public class TenantUser {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    public TenantUserRole getRole() { return role; }
+    public void setRole(TenantUserRole role) { this.role = role; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public TenantUserStatus getStatus() { return status; }
+    public void setStatus(TenantUserStatus status) { this.status = status; }
 
     public Long getCreatedAt() { return createdAt; }
     public void setCreatedAt(Long createdAt) { this.createdAt = createdAt; }

@@ -48,7 +48,7 @@ public class TenantController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping
+    @PatchMapping("/{id}/status")
     public ResponseEntity<TenantResponse> changeStatus(
         @PathVariable String id,
         @Valid @RequestBody UpdateTenantStatusRequest request) {
