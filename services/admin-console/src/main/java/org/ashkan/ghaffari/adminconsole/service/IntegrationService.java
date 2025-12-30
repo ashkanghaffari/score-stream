@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class IntegrationService {
-    private IntegrationRepository integrationRepository;
+    private final IntegrationRepository integrationRepository;
 
     public IntegrationService(IntegrationRepository integrationRepository) {
         this.integrationRepository = integrationRepository;

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 public class TenantUserController {
-    private TenantUserService tenantUserService;
+    private final TenantUserService tenantUserService;
 
     public TenantUserController(TenantUserService tenantUserService) {
         this.tenantUserService = tenantUserService;

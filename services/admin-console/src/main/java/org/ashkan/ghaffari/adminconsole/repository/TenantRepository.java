@@ -7,6 +7,9 @@ import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Repository
 public class TenantRepository {
 
@@ -25,5 +28,11 @@ public class TenantRepository {
                 .partitionValue(tenantId)
                 .build()
         );
+    }
+
+    public List<Tenant> findAll() {
+        List<Tenant> tenants = new ArrayList<>();
+        table.scan().items().forEach(tenants::add);
+        return tenants;
     }
 }

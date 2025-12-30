@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TenantUserService {
-    private TenantUserRepository tenantUserRepository;
+    private final TenantUserRepository tenantUserRepository;
 
     public TenantUserService(TenantUserRepository tenantUserRepository) {
         this.tenantUserRepository = tenantUserRepository;

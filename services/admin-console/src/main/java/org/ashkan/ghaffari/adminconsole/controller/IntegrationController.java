@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 public class IntegrationController {
-    private IntegrationService integrationService;
+    private final IntegrationService integrationService;
 
     public IntegrationController(IntegrationService integrationService) {
         this.integrationService = integrationService;
