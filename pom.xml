@@ -24,6 +24,7 @@
         <module>services/common-domain</module>
         <module>services/ingestor</module>
         <module>services/inference-analyzer</module>
+        <module>services/admin-console</module>
     </modules>
 
     <dependencyManagement>

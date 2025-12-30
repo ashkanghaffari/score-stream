@@ -1,7 +1,6 @@
 HELP.md
-.env
 target/
-!.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
@@ -32,9 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-/infra/local-infra/create-ruleconfigs-dynamodb.sh
-/infra/local-infra/dynamoc-db-create-tables.sh
-/infra/local-infra/kafka-topics-create.sh
-/infra/local-infra/create-tenants-dynamodb.sh
-/AGENTS.md
-/DESIGN_FLOW.md
