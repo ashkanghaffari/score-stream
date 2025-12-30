@@ -1,5 +1,7 @@
 package org.ashkan.ghaffari.common.dynamo.integration;
 
+import org.ashkan.ghaffari.common.adminconsole.IntegrationStatus;
+import org.ashkan.ghaffari.common.adminconsole.IntegrationType;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
@@ -11,15 +13,15 @@ public class Integration {
     private String tenantId;
     private String integrationId;
     private String name;
-    private String type;
+    private IntegrationType type;
     private String apiKeyHash;
-    private String status;
+    private IntegrationStatus status;
     private Long createdAt;
 
     public Integration() {}
 
     public Integration(String tenantId, String integrationId, String name,
-                       String type, String apiKeyHash, String status,
+                       IntegrationType type, String apiKeyHash, IntegrationStatus status,
                        Long createdAt) {
         this.tenantId = tenantId;
         this.integrationId = integrationId;
@@ -41,15 +43,15 @@ public class Integration {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
+    public IntegrationType getType() { return type; }
+    public void setType(IntegrationType type) { this.type = type; }
 
     @DynamoDbSecondaryPartitionKey(indexNames = "IntegrationByApiKeyHash")
     public String getApiKeyHash() { return apiKeyHash; }
     public void setApiKeyHash(String apiKeyHash) { this.apiKeyHash = apiKeyHash; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public IntegrationStatus getStatus() { return status; }
+    public void setStatus(IntegrationStatus status) { this.status = status; }
 
     public Long getCreatedAt() { return createdAt; }
     public void setCreatedAt(Long createdAt) { this.createdAt = createdAt; }
