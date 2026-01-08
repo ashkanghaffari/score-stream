@@ -3,9 +3,9 @@ package org.ashkan.ghaffari.adminconsole.service;
 import org.ashkan.ghaffari.adminconsole.dto.request.CreateIntegrationRequest;
 import org.ashkan.ghaffari.adminconsole.dto.request.UpdateIntegrationStatusRequest;
 import org.ashkan.ghaffari.adminconsole.dto.response.IntegrationResponse;
+import org.ashkan.ghaffari.adminconsole.entity.Integration;
 import org.ashkan.ghaffari.adminconsole.repository.IntegrationRepository;
-import org.ashkan.ghaffari.common.adminconsole.IntegrationStatus;
-import org.ashkan.ghaffari.common.dynamo.integration.Integration;
+import org.ashkan.ghaffari.adminconsole.entity.IntegrationStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -46,7 +46,7 @@ public class IntegrationService {
     }
 
     public List<IntegrationResponse> list(String tenantId) {
-        return integrationRepository.findByTenant(tenantId)
+        return integrationRepository.findByTenantId(tenantId)
             .stream()
             .map(this::toResponse)
             .toList();

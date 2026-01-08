@@ -1,31 +1,20 @@
 package org.ashkan.ghaffari.adminconsole.repository;
 
-import org.ashkan.ghaffari.common.dynamo.tenantuser.TenantUser;
+import org.ashkan.ghaffari.adminconsole.entity.TenantUser;
+import org.ashkan.ghaffari.adminconsole.entity.TenantUserId;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
-import software.amazon.awssdk.enhanced.dynamodb.Key;
-import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
+
+import java.util.List;
+import java.util.Optional;
 
 @Repository
-public class TenantUserRepository {
-
-    private final DynamoDbTable<TenantUser> table;
-
-    public TenantUserRepository(DynamoDbEnhancedClient enhancedClient) {
-        this.table = enhancedClient.table("TenantUser", TableSchema.fromBean(TenantUser.class));
+public interface TenantUserRepository extends JpaRepository<TenantUser, TenantUserId> {
+    default TenantUser find(String tenantId, String userId) {
+        return findById(new TenantUserId(tenantId, userId)).orElse(null);
     }
 
-    public void save(TenantUser tenantUser) {
-        table.putItem(tenantUser);
-    }
+    List<TenantUser> findByEmail(String email);
 
-    public TenantUser find(String tenantId, String userId) {
-        return table.getItem(
-            Key.builder()
-                .partitionValue(tenantId)
-                .sortValue(userId)
-                .build()
-        );
-    }
+    Optional<TenantUser> findByTenantIdAndEmail(String tenantId, String email);
 }

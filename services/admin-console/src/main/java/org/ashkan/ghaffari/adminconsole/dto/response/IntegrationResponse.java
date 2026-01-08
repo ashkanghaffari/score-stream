@@ -1,7 +1,7 @@
 package org.ashkan.ghaffari.adminconsole.dto.response;
 
-import org.ashkan.ghaffari.common.adminconsole.IntegrationStatus;
-import org.ashkan.ghaffari.common.adminconsole.IntegrationType;
+import org.ashkan.ghaffari.adminconsole.entity.IntegrationStatus;
+import org.ashkan.ghaffari.adminconsole.entity.IntegrationType;
 
 public record IntegrationResponse(
     String tenantId,

@@ -1,7 +1,7 @@
 package org.ashkan.ghaffari.adminconsole.dto.response;
 
-import org.ashkan.ghaffari.common.adminconsole.TenantUserRole;
-import org.ashkan.ghaffari.common.adminconsole.TenantUserStatus;
+import org.ashkan.ghaffari.adminconsole.entity.TenantUserRole;
+import org.ashkan.ghaffari.adminconsole.entity.TenantUserStatus;
 
 public record TenantUserResponse(
     String tenantId,
