@@ -1,11 +1,10 @@
 package org.ashkan.ghaffari.adminconsole.service;
 
 import org.ashkan.ghaffari.adminconsole.dto.request.CreateTenantRequest;
-import org.ashkan.ghaffari.adminconsole.dto.request.UpdateTenantStatusRequest;
 import org.ashkan.ghaffari.adminconsole.dto.response.TenantResponse;
-import org.ashkan.ghaffari.common.adminconsole.TenantStatus;
+import org.ashkan.ghaffari.adminconsole.entity.Tenant;
+import org.ashkan.ghaffari.adminconsole.entity.TenantStatus;
 import org.ashkan.ghaffari.adminconsole.repository.TenantRepository;
-import org.ashkan.ghaffari.common.dynamo.tenant.Tenant;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 

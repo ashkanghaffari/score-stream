@@ -1,0 +1,68 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: Ashkan Ghaffari
+      changes:
+        - createTable:
+            tableName: tenant_user
+            columns:
+              - column:
+                  name: tenant_id
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: role
+                  type: VARCHAR(32)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: status
+                  type: VARCHAR(32)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+        - addPrimaryKey:
+            tableName: tenant_user
+            columnNames: tenant_id, user_id
+            constraintName: pk_tenant_user
+
+        - addUniqueConstraint:
+            tableName: tenant_user
+            columnNames: tenant_id, email
+            constraintName: uq_tenant_user_email
+
+        - createIndex:
+            tableName: tenant_user
+            indexName: idx_tenant_user_email
+            columns:
+              - column:
+                  name: email
+
+        - addForeignKeyConstraint:
+            baseTableName: tenant_user
+            baseColumnNames: tenant_id
+            referencedTableName: tenant
+            referencedColumnNames: tenant_id
+            constraintName: fk_tenant_user_tenant
+            onDelete: CASCADE

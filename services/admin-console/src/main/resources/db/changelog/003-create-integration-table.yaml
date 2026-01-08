@@ -1,0 +1,67 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: Ashkan Ghaffari
+      changes:
+        - createTable:
+            tableName: integration
+            columns:
+              - column:
+                  name: tenant_id
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: integration_id
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: type
+                  type: VARCHAR(32)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: api_key_hash
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: status
+                  type: VARCHAR(32)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+        - addPrimaryKey:
+            tableName: integration
+            columnNames: tenant_id, integration_id
+            constraintName: pk_integration
+
+        - addUniqueConstraint:
+            tableName: integration
+            columnNames: api_key_hash
+            constraintName: uq_integration_api_key_hash
+
+        - addForeignKeyConstraint:
+            baseTableName: integration
+            baseColumnNames: tenant_id
+            referencedTableName: tenant
+            referencedColumnNames: tenant_id
+            constraintName: fk_integration_tenant
+            onDelete: CASCADE

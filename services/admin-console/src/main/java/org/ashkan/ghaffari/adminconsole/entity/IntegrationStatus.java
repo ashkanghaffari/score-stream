@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.common.adminconsole;
+package org.ashkan.ghaffari.adminconsole.entity;
 
 public enum IntegrationStatus {
     ACTIVE,
