@@ -2,6 +2,27 @@ spring:
   application:
     name: admin-console
 
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/tinyurl}
+    username: ${DB_USERNAME:tinyuser}
+    password: ${DB_PASSWORD:tinypass}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          lob.non_contextual_creation: true
+    open-in-view: false
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true
+
 server:
   port: ${SERVER_PORT:8080}
 

@@ -33,10 +33,30 @@ services:
     volumes:
       - dynamodb-data:/home/dynamodblocal/data
 
+  postgres:
+    image: postgres:16
+    container_name: tinyurl-db
+    restart: always
+    environment:
+      POSTGRES_USER: tinyuser
+      POSTGRES_PASSWORD: tinypass
+      POSTGRES_DB: tinyurl
+    ports:
+      - "5432:5432"
+    volumes:
+      - tinyurl_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tinyuser -d tinyurl"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 volumes:
   kafka-data:
     driver: local
   redis-data:
     driver: local
   dynamodb-data:
+    driver: local
+  tinyurl_data:
     driver: local
