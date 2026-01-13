@@ -20,4 +20,14 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
+
+    @ExceptionHandler(InvalidExternalClaimException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidExternalClaim(InvalidExternalClaimException ex) {
+        ErrorResponse error = new ErrorResponse(
+            HttpStatus.BAD_GATEWAY.value(),
+            ex.getMessage(),
+            LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(error);
+    }
 }

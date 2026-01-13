@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Service
 public class TenantUserService {
@@ -65,5 +66,20 @@ public class TenantUserService {
             user.getStatus(),
             user.getCreatedAt()
         );
+    }
+
+    public TenantUser requireActiveUser(String tenantId, String email) {
+        return tenantUserRepository.findByTenantIdAndEmail(tenantId, email)
+            .filter(user -> user.getStatus() == TenantUserStatus.ACTIVE)
+            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND,
+                "User not active for tenant: " + tenantId));
+    }
+
+    public TenantUser requireActiveUserById(String tenantId, String userId) {
+        TenantUser user = tenantUserRepository.find(tenantId, userId);
+        if (user == null || user.getStatus() != TenantUserStatus.ACTIVE) {
+            throw new ResponseStatusException(UNAUTHORIZED, "User not active for tenant: " + tenantId);
+        }
+        return user;
     }
 }

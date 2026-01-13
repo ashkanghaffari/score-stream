@@ -2,12 +2,33 @@ spring:
   application:
     name: admin-console
 
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/admin-console}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          lob.non_contextual_creation: true
+    open-in-view: false
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true
+
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${SERVER_PORT}
 
 management:
   server:
-    port: ${MANAGEMENT_PORT:8081}
+    port: ${MANAGEMENT_PORT}
   endpoints:
     web:
       exposure:
@@ -27,3 +48,24 @@ management:
 logging:
   level:
     root: ${LOG_LEVEL_ROOT:INFO}
+
+admin:
+  security:
+    google:
+      client-id: ${GOOGLE_CLIENT_ID}
+      client-secret: ${GOOGLE_CLIENT_SECRET}
+      redirect-uri: ${GOOGLE_REDIRECT_URI}
+      authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+      token-uri: https://oauth2.googleapis.com/token
+      user-info-uri: https://openidconnect.googleapis.com/v1/userinfo
+      jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+      issuer-uri: https://accounts.google.com
+      scopes:
+        - openid
+        - email
+        - profile
+    jwt:
+      secret: ${ADMIN_JWT_SECRET}
+      issuer: admin-console
+      access-token-lifetime-sec: ${ADMIN_JWT_ACCESS_LIFETIME_SEC:3600}
+      refresh-token-lifetime-days: ${ADMIN_JWT_REFRESH_LIFETIME_DAYS:30}

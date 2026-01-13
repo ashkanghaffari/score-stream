@@ -33,10 +33,30 @@ services:
     volumes:
       - dynamodb-data:/home/dynamodblocal/data
 
+  postgres:
+    image: postgres:16
+    container_name: admin-console-db
+    restart: always
+    environment:
+      POSTGRES_USER: consoleuser
+      POSTGRES_PASSWORD: consolepass
+      POSTGRES_DB: admin-console
+    ports:
+      - "5432:5432"
+    volumes:
+      - admin_console_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tinyuser -d admin-console"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 volumes:
   kafka-data:
     driver: local
   redis-data:
     driver: local
   dynamodb-data:
+    driver: local
+  admin_console_data:
     driver: local
