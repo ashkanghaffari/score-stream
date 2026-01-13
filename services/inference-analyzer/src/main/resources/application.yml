@@ -6,10 +6,10 @@ spring:
       enabled: true
 
 server:
-  port: ${SERVER_PORT:8082}
+  port: ${INFERENCE_SERVER_PORT}
 
 openai:
-  base-url: https://api.openai.com/v1
-  model: gpt-4o-mini
-  temperature: 0.2
-  max-tokens: 200
+  base-url: ${OPENAI_BASE_URL}
+  model: ${OPENAI_MODEL}
+  temperature: ${OPENAI_TEMP}
+  max-tokens: ${OPENAI_MAX_TOKENS}

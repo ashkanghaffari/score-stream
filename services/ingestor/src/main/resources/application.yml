@@ -23,11 +23,11 @@ spring:
       port: 6379
 
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${INGESTOR_SERVER_PORT}
 
 management:
   server:
-    port: ${MANAGEMENT_PORT:8081}
+    port: ${INGESTOR_MANAGEMENT_PORT}
   endpoints:
     web:
       exposure:
