@@ -6,6 +6,7 @@ import org.ashkan.ghaffari.adminconsole.dto.response.TenantResponse;
 import org.ashkan.ghaffari.adminconsole.service.TenantService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,12 +29,14 @@ public class TenantController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<TenantResponse> getTenant(@PathVariable String id) {
         TenantResponse response = tenantService.getTenant(id);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<TenantResponse> createTenant(
         @Valid @RequestBody CreateTenantRequest request) {
         TenantResponse response = tenantService.createTenant(request);
@@ -43,12 +46,14 @@ public class TenantController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<List<TenantResponse>> getTenants() {
         List<TenantResponse> response = tenantService.getTenants();
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<TenantResponse> changeStatus(
         @PathVariable String id,
         @Valid @RequestBody UpdateTenantStatusRequest request) {

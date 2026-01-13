@@ -7,6 +7,7 @@ import org.ashkan.ghaffari.adminconsole.dto.response.IntegrationResponse;
 import org.ashkan.ghaffari.adminconsole.service.IntegrationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,7 @@ public class IntegrationController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN')")
     public ResponseEntity<IntegrationResponse> create(@PathVariable String tenantId,
                                                       @Valid @RequestBody CreateIntegrationRequest request) {
         IntegrationResponse response = integrationService.create(tenantId, request);
@@ -34,17 +36,20 @@ public class IntegrationController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN')")
     public ResponseEntity<List<IntegrationResponse>> list(@PathVariable String tenantId) {
         return ResponseEntity.ok(integrationService.list(tenantId));
     }
 
     @GetMapping("/{integrationId}")
+    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN')")
     public ResponseEntity<IntegrationResponse> get(@PathVariable String tenantId,
                                                    @PathVariable String integrationId) {
         return ResponseEntity.ok(integrationService.get(tenantId, integrationId));
     }
 
     @PatchMapping("/{integrationId}/status")
+    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN')")
     public ResponseEntity<IntegrationResponse> updateStatus(@PathVariable String tenantId,
                                                             @PathVariable String integrationId,
                                                             @Valid @RequestBody UpdateIntegrationStatusRequest request) {

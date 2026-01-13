@@ -44,12 +44,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String role = claims.get("role", String.class);
 
             if (StringUtils.hasText(userId) && SecurityContextHolder.getContext().getAuthentication() == null) {
+                String authority = role != null ? "ROLE_" + role : "ROLE_UNKNOWN";
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    userId, null, List.of(() -> role)
+                    userId, null, List.of(() -> authority)
                 );
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                // Optionally attach tenantId as a detail
-                authentication.setDetails(tenantId);
+                var details = new java.util.HashMap<String, Object>();
+                details.put("request", new WebAuthenticationDetailsSource().buildDetails(request));
+                details.put("tenantId", tenantId);
+                authentication.setDetails(details);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception ex) {

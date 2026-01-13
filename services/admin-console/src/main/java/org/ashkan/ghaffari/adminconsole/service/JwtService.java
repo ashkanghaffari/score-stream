@@ -20,6 +20,7 @@ public class JwtService {
 
     public JwtService(JwtTokenConfig config) {
         this.config = config;
+        validateSecret(config.getSecret());
         this.key = Keys.hmacShaKeyFor(config.getSecret().getBytes(StandardCharsets.UTF_8));
     }
 
@@ -42,9 +43,19 @@ public class JwtService {
 
     public Claims parse(String token) {
         return Jwts.parser()
+            .requireIssuer(config.getIssuer())
             .verifyWith(key)
             .build()
             .parseSignedClaims(token)
             .getPayload();
+    }
+
+    private void validateSecret(String secret) {
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalStateException("JWT secret is missing");
+        }
+        if (secret.getBytes(StandardCharsets.UTF_8).length < 32) {
+            throw new IllegalStateException("JWT secret must be at least 32 bytes for HS256");
+        }
     }
 }
