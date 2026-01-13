@@ -24,7 +24,7 @@ public class TenantUserController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN') and @tenantSecurity.canAccessTenant(#tenantId)")
     public ResponseEntity<TenantUserResponse> addUser(@PathVariable String tenantId,
                                                       @Valid @RequestBody CreateTenantUserRequest request) {
         TenantUserResponse response = tenantUserService.addUser(tenantId, request);
@@ -32,7 +32,7 @@ public class TenantUserController {
     }
 
     @PostMapping("/invite")
-    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN') and @tenantSecurity.canAccessTenant(#tenantId)")
     public ResponseEntity<TenantUserResponse> inviteUser(@PathVariable String tenantId,
                                                          @Valid @RequestBody CreateTenantUserRequest request) {
         TenantUserResponse response = tenantUserService.inviteUser(tenantId, request);
@@ -40,7 +40,7 @@ public class TenantUserController {
     }
 
     @GetMapping("/{userId}")
-    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN') and @tenantSecurity.canAccessTenant(#tenantId)")
     public ResponseEntity<TenantUserResponse> getUser(@PathVariable String tenantId,
                                                       @PathVariable String userId) {
         TenantUserResponse response = tenantUserService.getUser(tenantId, userId);

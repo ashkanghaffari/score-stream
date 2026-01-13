@@ -22,13 +22,13 @@ public class FraudAnalysisController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN','ANALYST','VIEWER')")
+    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN','ANALYST','VIEWER') and @tenantSecurity.canAccessTenant(#tenantId)")
     public ResponseEntity<List<FraudAnalysisResponse>> list(@PathVariable String tenantId) {
         return ResponseEntity.ok(fraudAnalysisAdminService.listByTenant(tenantId));
     }
 
     @GetMapping("/{analysisId}")
-    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN','ANALYST','VIEWER')")
+    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN','ANALYST','VIEWER') and @tenantSecurity.canAccessTenant(#tenantId)")
     public ResponseEntity<FraudAnalysisResponse> get(@PathVariable String tenantId,
                                                      @PathVariable String analysisId) {
         return ResponseEntity.ok(fraudAnalysisAdminService.get(tenantId, analysisId));

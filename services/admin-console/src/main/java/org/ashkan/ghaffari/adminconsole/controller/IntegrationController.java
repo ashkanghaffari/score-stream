@@ -28,7 +28,7 @@ public class IntegrationController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN') and @tenantSecurity.canAccessTenant(#tenantId)")
     public ResponseEntity<IntegrationResponse> create(@PathVariable String tenantId,
                                                       @Valid @RequestBody CreateIntegrationRequest request) {
         IntegrationResponse response = integrationService.create(tenantId, request);
@@ -36,20 +36,20 @@ public class IntegrationController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN') and @tenantSecurity.canAccessTenant(#tenantId)")
     public ResponseEntity<List<IntegrationResponse>> list(@PathVariable String tenantId) {
         return ResponseEntity.ok(integrationService.list(tenantId));
     }
 
     @GetMapping("/{integrationId}")
-    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN') and @tenantSecurity.canAccessTenant(#tenantId)")
     public ResponseEntity<IntegrationResponse> get(@PathVariable String tenantId,
                                                    @PathVariable String integrationId) {
         return ResponseEntity.ok(integrationService.get(tenantId, integrationId));
     }
 
     @PatchMapping("/{integrationId}/status")
-    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPERADMIN','ADMIN') and @tenantSecurity.canAccessTenant(#tenantId)")
     public ResponseEntity<IntegrationResponse> updateStatus(@PathVariable String tenantId,
                                                             @PathVariable String integrationId,
                                                             @Valid @RequestBody UpdateIntegrationStatusRequest request) {
