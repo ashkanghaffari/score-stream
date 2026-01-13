@@ -3,7 +3,7 @@ spring:
     name: admin-console
 
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/tinyurl}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/admin-console}
     username: ${DB_USERNAME:tinyuser}
     password: ${DB_PASSWORD:tinypass}
     driver-class-name: org.postgresql.Driver

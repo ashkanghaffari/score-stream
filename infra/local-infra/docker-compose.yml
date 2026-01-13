@@ -35,18 +35,18 @@ services:
 
   postgres:
     image: postgres:16
-    container_name: tinyurl-db
+    container_name: admin-console-db
     restart: always
     environment:
       POSTGRES_USER: tinyuser
       POSTGRES_PASSWORD: tinypass
-      POSTGRES_DB: tinyurl
+      POSTGRES_DB: admin-console
     ports:
       - "5432:5432"
     volumes:
-      - tinyurl_data:/var/lib/postgresql/data
+      - admin_console_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U tinyuser -d tinyurl"]
+      test: ["CMD-SHELL", "pg_isready -U tinyuser -d admin-console"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -58,5 +58,5 @@ volumes:
     driver: local
   dynamodb-data:
     driver: local
-  tinyurl_data:
+  admin_console_data:
     driver: local
