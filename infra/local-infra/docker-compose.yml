@@ -38,8 +38,8 @@ services:
     container_name: admin-console-db
     restart: always
     environment:
-      POSTGRES_USER: tinyuser
-      POSTGRES_PASSWORD: tinypass
+      POSTGRES_USER: consoleuser
+      POSTGRES_PASSWORD: consolepass
       POSTGRES_DB: admin-console
     ports:
       - "5432:5432"
