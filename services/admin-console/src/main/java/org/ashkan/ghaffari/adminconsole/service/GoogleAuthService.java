@@ -16,6 +16,7 @@ import org.ashkan.ghaffari.adminconsole.dto.request.GoogleTokenRequest;
 import org.ashkan.ghaffari.adminconsole.dto.response.GenerateTokenResponse;
 import org.ashkan.ghaffari.adminconsole.dto.response.GoogleTokenResponse;
 import org.ashkan.ghaffari.adminconsole.dto.response.RefreshTokenResult;
+import org.ashkan.ghaffari.adminconsole.dto.response.SessionInfo;
 import org.ashkan.ghaffari.adminconsole.dto.response.UserInfo;
 import org.ashkan.ghaffari.adminconsole.security.config.GoogleIdpConfig;
 import org.ashkan.ghaffari.adminconsole.security.token.JwtTokenConfig;
@@ -101,6 +102,7 @@ public class GoogleAuthService {
             refreshTokenResult != null ? refreshTokenResult.plainToken() : null,
             tokenResponse.expires_in(),
             tokenResponse.scope(),
+            new SessionInfo(user.getTenantId(), user.getRole().name()),
             new UserInfo(claims.getStringClaim("email"), claims.getStringClaim("name"))
         );
     }
@@ -124,6 +126,7 @@ public class GoogleAuthService {
             rotated.plainToken(), // new plain token
             jwtConfig.getAccessTokenLifetimeSec(),
             "openid email profile",
+            new SessionInfo(user.getTenantId(), user.getRole().name()),
             null
         );
     }
