@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 5
+      author: Ashkan Ghaffari
+      changes:
+        - addUniqueConstraint:
+            tableName: tenant
+            columnNames: name
+            constraintName: uq_tenant_name
+        - createIndex:
+            tableName: tenant
+            indexName: idx_tenant_name
+            columns:
+              - column:
+                  name: name

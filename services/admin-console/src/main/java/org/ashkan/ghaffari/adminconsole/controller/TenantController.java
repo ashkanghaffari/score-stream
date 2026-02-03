@@ -3,6 +3,7 @@ package org.ashkan.ghaffari.adminconsole.controller;
 import org.ashkan.ghaffari.adminconsole.dto.request.CreateTenantRequest;
 import org.ashkan.ghaffari.adminconsole.dto.request.UpdateTenantStatusRequest;
 import org.ashkan.ghaffari.adminconsole.dto.response.TenantResponse;
+import org.ashkan.ghaffari.adminconsole.service.TenantLookupService;
 import org.ashkan.ghaffari.adminconsole.service.TenantService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,15 +24,18 @@ import java.util.List;
 @RequestMapping("/v1/tenant")
 public class TenantController {
     private final TenantService tenantService;
+    private final TenantLookupService tenantLookupService;
 
-    public TenantController(TenantService tenantService) {
+    public TenantController(TenantService tenantService, TenantLookupService tenantLookupService) {
         this.tenantService = tenantService;
+        this.tenantLookupService = tenantLookupService;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{tenantName}")
     @PreAuthorize("hasRole('SUPERADMIN')")
-    public ResponseEntity<TenantResponse> getTenant(@PathVariable String id) {
-        TenantResponse response = tenantService.getTenant(id);
+    public ResponseEntity<TenantResponse> getTenant(@PathVariable String tenantName) {
+        String tenantId = tenantLookupService.requireTenantId(tenantName);
+        TenantResponse response = tenantService.getTenant(tenantId);
         return ResponseEntity.ok(response);
     }
 
@@ -52,12 +56,13 @@ public class TenantController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/{id}/status")
+    @PatchMapping("/{tenantName}/status")
     @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<TenantResponse> changeStatus(
-        @PathVariable String id,
+        @PathVariable String tenantName,
         @Valid @RequestBody UpdateTenantStatusRequest request) {
-        TenantResponse response = tenantService.changeStatus(id, request.status());
+        String tenantId = tenantLookupService.requireTenantId(tenantName);
+        TenantResponse response = tenantService.changeStatus(tenantId, request.status());
         return ResponseEntity.ok(response);
     }
 

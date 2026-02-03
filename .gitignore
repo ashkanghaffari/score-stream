@@ -36,5 +36,6 @@ build/
 /infra/local-infra/dynamoc-db-create-tables.sh
 /infra/local-infra/kafka-topics-create.sh
 /infra/local-infra/seed-postgres-admin-console.sh
+/infra/local-infra/seed-postgres-superadmin.sh
 /AGENTS.md
 /DESIGN_FLOW.md

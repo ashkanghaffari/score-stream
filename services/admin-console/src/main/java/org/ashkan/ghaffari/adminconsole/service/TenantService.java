@@ -8,6 +8,7 @@ import org.ashkan.ghaffari.adminconsole.repository.TenantRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import java.time.Instant;
 import java.util.List;
@@ -37,6 +38,9 @@ public class TenantService {
     }
 
     public TenantResponse createTenant(CreateTenantRequest request) {
+        if (tenantRepository.existsByName(request.name())) {
+            throw new ResponseStatusException(CONFLICT, "Tenant name already exists: " + request.name());
+        }
         Tenant tenant = new Tenant(
             UUID.randomUUID().toString(),
             request.name(),

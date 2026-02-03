@@ -8,11 +8,14 @@ import org.ashkan.ghaffari.adminconsole.entity.TenantUserRole;
 import org.ashkan.ghaffari.adminconsole.entity.TenantUserStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.Instant;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -45,6 +48,9 @@ public class TenantUserService {
             throw new ResponseStatusException(CONFLICT, "User already exists for tenant: " + request.email());
         }
         TenantUserRole role = request.role();
+        if (role == TenantUserRole.SUPERADMIN && !isCallerSuperadmin()) {
+            throw new ResponseStatusException(FORBIDDEN, "Only SUPERADMIN can create SUPERADMIN users");
+        }
         TenantUser user = new TenantUser(
             tenantId,
             UUID.randomUUID().toString(),
@@ -55,6 +61,15 @@ public class TenantUserService {
         );
         tenantUserRepository.save(user);
         return toResponse(user);
+    }
+
+    private boolean isCallerSuperadmin() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            return false;
+        }
+        return auth.getAuthorities().stream()
+            .anyMatch(authority -> "ROLE_SUPERADMIN".equals(authority.getAuthority()));
     }
 
     private TenantUserResponse toResponse(TenantUser user) {
