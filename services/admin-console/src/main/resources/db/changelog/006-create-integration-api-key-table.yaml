@@ -1,0 +1,82 @@
+databaseChangeLog:
+  - changeSet:
+      id: 6
+      author: Ashkan Ghaffari
+      changes:
+        - createTable:
+            tableName: integration_api_key
+            columns:
+              - column:
+                  name: tenant_id
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: integration_id
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: api_key_id
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: key_hash
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: status
+                  type: VARCHAR(32)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: expires_at
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: last_used_at
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+
+        - addPrimaryKey:
+            tableName: integration_api_key
+            columnNames: tenant_id, integration_id, api_key_id
+            constraintName: pk_integration_api_key
+
+        - addUniqueConstraint:
+            tableName: integration_api_key
+            columnNames: key_hash
+            constraintName: uq_integration_api_key_hash
+
+        - createIndex:
+            tableName: integration_api_key
+            indexName: idx_integration_api_key_integration
+            columns:
+              - column:
+                  name: tenant_id
+              - column:
+                  name: integration_id
+
+        - addForeignKeyConstraint:
+            baseTableName: integration_api_key
+            baseColumnNames: tenant_id, integration_id
+            referencedTableName: integration
+            referencedColumnNames: tenant_id, integration_id
+            constraintName: fk_integration_api_key_integration
+            onDelete: CASCADE

@@ -9,15 +9,9 @@ import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(
-    name = "integration",
-    uniqueConstraints = {
-        @UniqueConstraint(name = "uq_integration_api_key_hash", columnNames = "api_key_hash")
-    }
-)
+@Table(name = "integration")
 @IdClass(IntegrationId.class)
 public class Integration {
 
@@ -36,9 +30,6 @@ public class Integration {
     @Column(name = "type", nullable = false, length = 32)
     private IntegrationType type;
 
-    @Column(name = "api_key_hash", length = 255)
-    private String apiKeyHash;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 32)
     private IntegrationStatus status;
@@ -53,12 +44,11 @@ public class Integration {
     public Integration() {}
 
     public Integration(String tenantId, String integrationId, String name, IntegrationType type,
-                       String apiKeyHash, IntegrationStatus status, Long createdAt) {
+                       IntegrationStatus status, Long createdAt) {
         this.tenantId = tenantId;
         this.integrationId = integrationId;
         this.name = name;
         this.type = type;
-        this.apiKeyHash = apiKeyHash;
         this.status = status;
         this.createdAt = createdAt;
     }
@@ -93,14 +83,6 @@ public class Integration {
 
     public void setType(IntegrationType type) {
         this.type = type;
-    }
-
-    public String getApiKeyHash() {
-        return apiKeyHash;
-    }
-
-    public void setApiKeyHash(String apiKeyHash) {
-        this.apiKeyHash = apiKeyHash;
     }
 
     public IntegrationStatus getStatus() {

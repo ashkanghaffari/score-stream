@@ -29,7 +29,6 @@ public class IntegrationService {
             UUID.randomUUID().toString(),
             request.name(),
             request.type(),
-            null, // TODO: apiKeyHash to be generated later
             IntegrationStatus.ACTIVE,
             Instant.now().toEpochMilli()
         );

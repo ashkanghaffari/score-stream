@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface IntegrationRepository extends JpaRepository<Integration, IntegrationId> {
@@ -16,5 +15,4 @@ public interface IntegrationRepository extends JpaRepository<Integration, Integr
 
     List<Integration> findByTenantId(String tenantId);
 
-    Optional<Integration> findByApiKeyHash(String apiKeyHash);
 }

@@ -3,13 +3,16 @@ databaseChangeLog:
       file: db/changelog/001-create-tenant-table.yaml
 
   - include:
+      file: db/changelog/005-add-tenant-name-unique.yaml
+
+  - include:
       file: db/changelog/002-create-tenant-user-table.yaml
 
   - include:
       file: db/changelog/003-create-integration-table.yaml
 
   - include:
-      file: db/changelog/004-create-refresh-token-table.yaml
+      file: db/changelog/006-create-integration-api-key-table.yaml
 
   - include:
-      file: db/changelog/005-add-tenant-name-unique.yaml
+      file: db/changelog/004-create-refresh-token-table.yaml
