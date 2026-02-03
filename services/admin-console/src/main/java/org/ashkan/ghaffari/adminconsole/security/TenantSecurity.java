@@ -5,9 +5,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.Optional;
+
+import org.ashkan.ghaffari.adminconsole.service.TenantLookupService;
 
 @Component
 public class TenantSecurity {
+
+    private final TenantLookupService tenantLookupService;
+
+    public TenantSecurity(TenantLookupService tenantLookupService) {
+        this.tenantLookupService = tenantLookupService;
+    }
 
     public boolean canAccessTenant(String tenantId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -23,6 +32,16 @@ public class TenantSecurity {
             return tenantId != null && tenantId.equals(tokenTenantId);
         }
         return false;
+    }
+
+    public boolean canAccessTenantName(String tenantName) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && hasRole(auth, "ROLE_SUPERADMIN")) {
+            return true;
+        }
+        Optional<String> tenantId = tenantLookupService.findByName(tenantName)
+            .map(tenant -> tenant.getTenantId());
+        return tenantId.map(this::canAccessTenant).orElse(false);
     }
 
     private boolean hasRole(Authentication auth, String role) {

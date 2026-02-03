@@ -5,6 +5,7 @@ import org.ashkan.ghaffari.adminconsole.dto.request.RefreshTokenRequest;
 import org.ashkan.ghaffari.adminconsole.dto.response.GenerateTokenResponse;
 import org.ashkan.ghaffari.adminconsole.security.config.GoogleIdpConfig;
 import org.ashkan.ghaffari.adminconsole.service.GoogleAuthService;
+import org.ashkan.ghaffari.adminconsole.service.TenantLookupService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,17 +28,23 @@ public class GoogleAuthController {
 
     private final GoogleIdpConfig googleIdpConfig;
 
-    public GoogleAuthController(GoogleAuthService googleAuthService, GoogleIdpConfig googleIdpConfig) {
+    private final TenantLookupService tenantLookupService;
+
+    public GoogleAuthController(GoogleAuthService googleAuthService,
+                                GoogleIdpConfig googleIdpConfig,
+                                TenantLookupService tenantLookupService) {
         this.googleAuthService = googleAuthService;
         this.googleIdpConfig = googleIdpConfig;
+        this.tenantLookupService = tenantLookupService;
     }
 
     @GetMapping("/login")
-    public ResponseEntity<Void> login(@RequestParam("tenantId") String tenantId, HttpSession session) {
-        if (tenantId == null || tenantId.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing tenantId");
+    public ResponseEntity<Void> login(@RequestParam("tenantName") String tenantName, HttpSession session) {
+        if (tenantName == null || tenantName.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing tenantName");
         }
 
+        String tenantId = tenantLookupService.requireTenantId(tenantName);
         String state = UUID.randomUUID().toString();
         String nonce = UUID.randomUUID().toString();
 
