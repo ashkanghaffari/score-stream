@@ -2,13 +2,14 @@ package org.ashkan.ghaffari.adminconsole;
 
 import org.ashkan.ghaffari.adminconsole.security.config.GoogleIdpConfig;
 import org.ashkan.ghaffari.adminconsole.security.token.JwtTokenConfig;
+import org.ashkan.ghaffari.adminconsole.service.config.IntegrationApiKeyPolicyConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
 @SpringBootApplication
-@EnableConfigurationProperties({GoogleIdpConfig.class, JwtTokenConfig.class})
+@EnableConfigurationProperties({GoogleIdpConfig.class, JwtTokenConfig.class, IntegrationApiKeyPolicyConfig.class})
 @EnableMethodSecurity
 public class AdminConsoleApplication {
 

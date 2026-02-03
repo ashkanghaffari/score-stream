@@ -50,6 +50,9 @@ logging:
     root: ${LOG_LEVEL_ROOT:INFO}
 
 admin:
+  integration:
+    api-keys:
+      default-ttl-days: ${ADMIN_INTEGRATION_API_KEYS_DEFAULT_TTL_DAYS:30}
   security:
     google:
       client-id: ${GOOGLE_CLIENT_ID}
