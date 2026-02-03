@@ -19,10 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 
 import java.util.List;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/v1/tenant")
 public class TenantController {
+    private static final String ROOT_TENANT_NAME = "root-tenant";
     private final TenantService tenantService;
     private final TenantLookupService tenantLookupService;
 
@@ -61,6 +63,9 @@ public class TenantController {
     public ResponseEntity<TenantResponse> changeStatus(
         @PathVariable String tenantName,
         @Valid @RequestBody UpdateTenantStatusRequest request) {
+        if (ROOT_TENANT_NAME.equals(tenantName)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Root tenant status cannot be changed");
+        }
         String tenantId = tenantLookupService.requireTenantId(tenantName);
         TenantResponse response = tenantService.changeStatus(tenantId, request.status());
         return ResponseEntity.ok(response);
