@@ -1,0 +1,21 @@
+repositories:
+  - name: prometheus-community
+    url: https://prometheus-community.github.io/helm-charts
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami
+
+releases:
+  - name: prometheus
+    namespace: monitoring
+    createNamespace: true
+    chart: prometheus-community/kube-prometheus-stack
+    version: 76.3.0
+    values:
+      - prometheus/values.yaml
+  - name: pg-admin-console
+    namespace: data
+    createNamespace: true
+    chart: bitnami/postgresql
+    version: 16.7.27
+    values:
+      - postgresql/admin-console-values.yaml

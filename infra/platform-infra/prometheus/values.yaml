@@ -1,0 +1,49 @@
+# prometheus-community/kube-prometheus-stack values
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelector: {}          # Allow Prometheus to scrape any ServiceMonitor (can restrict in prod)
+    serviceMonitorNamespaceSelector: {} # Allow scraping ServiceMonitors across all namespaces (can restrict in prod)
+    retention: 15d                      # How long Prometheus keeps metrics data
+    scrapeInterval: 15s                 # How often to scrape metrics from targets
+    evaluationInterval: 15s             # How often Prometheus evaluates alerting/recording rules
+    resources:                          # Resource requests/limits for Prometheus server pod
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+
+alertmanager:
+  enabled: true                         # Deploy Alertmanager (for firing Prometheus alerts)
+  alertmanagerSpec:
+    replicas: 1                         # Run a single Alertmanager instance (can scale for HA later)
+    resources:                          # Resource requests/limits for Alertmanager pod
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 200m
+        memory: 512Mi
+
+grafana:
+  enabled: true                         # Deploy the built-in Grafana that ships with kube-prometheus-stack
+
+defaultRules:
+  create: true                          # Install default recording/alerting rules (basic out-of-the-box alerts)
+
+kubelet:
+  enabled: true                # Scrape metrics directly from the Kubelet on each node
+  serviceMonitor:
+    enabled: true              # Creates a ServiceMonitor so Prometheus can discover Kubelet metrics
+    cAdvisor: true             # Enable cAdvisor to expose container-level CPU/memory/disk stats
+
+nodeExporter:
+  enabled: true                # Deploy node-exporter DaemonSet for host-level Linux metrics
+                               # (CPU, memory, disk, network of the Kubernetes nodes)
+
+kubeStateMetrics:
+  enabled: true                # Enable kube-state-metrics to expose the state of K8s objects
+                               # (deployments, replicas, pods, jobs, daemonsets, etc.)
+                               # Useful for alerts like "desired != available replicas"
+

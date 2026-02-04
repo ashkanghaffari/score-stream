@@ -1,0 +1,8 @@
+auth:
+  username: keycloak_user
+  password: keycloak_pass
+  database: keycloak
+primary:
+  persistence:
+    enabled: true
+    size: 10Gi
