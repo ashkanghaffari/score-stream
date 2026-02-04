@@ -1,0 +1,27 @@
+name: admin-console-service-ci
+
+permissions:
+  contents: read
+  packages: write
+
+on:
+  push:
+    branches: [ development, 'feature/**', 'bugfix/**', 'hotfix/**' ]
+    paths:
+      - 'services/admin-console/**'
+      - 'pom.xml'
+      - '.github/workflows/admin-console-service-ci.yml'
+      - '.github/workflows/_service-ci.yml'
+  pull_request:
+    paths:
+      - 'services/admin-console/**'
+      - 'pom.xml'
+  workflow_dispatch:
+
+jobs:
+  ci:
+    uses: ./.github/workflows/_service-ci.yml
+    with:
+      service: admin-console
+    secrets:
+      gh_token: ${{ secrets.GITHUB_TOKEN }}

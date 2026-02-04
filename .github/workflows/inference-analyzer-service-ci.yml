@@ -1,0 +1,27 @@
+name: inference-analyzer-service-ci
+
+permissions:
+  contents: read
+  packages: write
+
+on:
+  push:
+    branches: [ development, 'feature/**', 'bugfix/**', 'hotfix/**' ]
+    paths:
+      - 'services/inference-analyzer/**'
+      - 'pom.xml'
+      - '.github/workflows/inference-analyzer-service-ci.yml'
+      - '.github/workflows/_service-ci.yml'
+  pull_request:
+    paths:
+      - 'services/inference-analyzer/**'
+      - 'pom.xml'
+  workflow_dispatch:
+
+jobs:
+  ci:
+    uses: ./.github/workflows/_service-ci.yml
+    with:
+      service: inference-analyzer
+    secrets:
+      gh_token: ${{ secrets.GITHUB_TOKEN }}

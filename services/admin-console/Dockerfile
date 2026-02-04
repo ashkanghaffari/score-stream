@@ -1,4 +1,4 @@
-# ingestor/Dockerfile
+# admin-console/Dockerfile
 FROM eclipse-temurin:25-jre-alpine
 
 # Create user/group up front
