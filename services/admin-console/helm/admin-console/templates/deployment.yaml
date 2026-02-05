@@ -25,6 +25,8 @@ spec:
                 name: {{ include "admin-console.fullname" . }}-config
             - secretRef:
                 name: {{ include "admin-console.fullname" . }}-db-credentials
+            - secretRef:
+                name: {{ .Values.secrets.jwtSecretName }}
           env:
             - name: "SERVER_PORT"
               value: "{{ .Values.ports.app }}"

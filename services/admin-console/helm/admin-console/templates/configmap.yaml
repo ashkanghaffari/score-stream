@@ -9,3 +9,5 @@ data:
   MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: {{ .Values.config.actuatorEndpoints | quote }}
   MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS: {{ .Values.config.healthShowDetails| quote }}
   JDBC_URL: {{ printf "jdbc:postgresql://%s:%d/%s" .Values.config.db.host (int .Values.config.db.port) .Values.config.db.database | quote }}
+  ADMIN_JWT_ACCESS_LIFETIME_SEC: {{ .Values.config.jwt.accessTokenLifetimeSec | quote }}
+  ADMIN_JWT_REFRESH_LIFETIME_DAYS: {{ .Values.config.jwt.refreshTokenLifetimeDays | quote }}
