@@ -1,5 +1,6 @@
 package org.ashkan.ghaffari.adminconsole.security.config;
 
+import org.ashkan.ghaffari.adminconsole.security.filter.InternalTokenFilter;
 import org.ashkan.ghaffari.adminconsole.security.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +15,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final InternalTokenFilter internalTokenFilter;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
+                          InternalTokenFilter internalTokenFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.internalTokenFilter = internalTokenFilter;
     }
 
     @Bean
@@ -31,11 +35,13 @@ public class SecurityConfig {
                     "/v3/api-docs/**",
                     "/swagger-ui/**",
                     "/swagger-ui.html",
-                    "/auth/**" // placeholder for future auth endpoints
+                    "/auth/**",
+                    "/v1/integration/api-keys/validate"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
             .exceptionHandling(ex -> ex.authenticationEntryPoint(unauthorizedEntryPoint()))
+            .addFilterBefore(internalTokenFilter, JwtAuthenticationFilter.class)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
