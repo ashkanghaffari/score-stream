@@ -6,3 +6,8 @@ primary:
   persistence:
     enabled: true
     size: 5Gi
+image:
+  registry: docker.io
+  repository: bitnami/postgresql
+  tag: "latest"
+
