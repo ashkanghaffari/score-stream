@@ -6,6 +6,8 @@ repositories:
 
 releases:
   - name: prometheus
+    labels:
+      app: monitoring
     namespace: monitoring
     createNamespace: true
     chart: prometheus-community/kube-prometheus-stack
@@ -13,6 +15,8 @@ releases:
     values:
       - prometheus/values.yaml
   - name: pg-admin-console
+    labels:
+      app: postgres
     namespace: data
     createNamespace: true
     chart: bitnami/postgresql
