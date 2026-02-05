@@ -1,4 +1,6 @@
 namespace: dev
 repoOwner: ashkanghaffari  # linked to GH org/user
 images:
-  admin-console: latest
+  admin-console: 20260205-012626-c07e601
+image:
+  pullPolicy: Always

@@ -84,3 +84,9 @@ config:
     host: "pg-admin-console-postgresql.data.svc.cluster.local"
     port: 5432
     database: "admin_console"
+  jwt:
+    accessTokenLifetimeSec: 900
+    refreshTokenLifetimeDays: 30
+
+secrets:
+  jwtSecretName: "admin-console-jwt"
