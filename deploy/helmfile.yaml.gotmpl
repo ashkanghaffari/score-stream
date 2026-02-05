@@ -1,0 +1,25 @@
+helmDefaults:
+  atomic: true
+  wait: true
+  timeout: 300
+  createNamespace: true
+
+environments:
+  dev:
+    values:
+      - environments/dev.yaml
+---
+# Global (state) values for all environments/releases (lowest precedence)
+values:
+  - values/common.yaml
+
+releases:
+  - name: admin-console
+    labels: { app: admin-console }
+    namespace: {{ .Environment.Values.namespace }}
+    chart: ../services/admin-console/helm/admin-console
+    values:
+      - values/common.yaml
+      - image:
+          repository: ghcr.io/{{ .Values.repoOwner }}/admin-console
+          tag: {{ (index .Values.images "admin-console") | default "latest" }}
