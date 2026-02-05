@@ -3,10 +3,10 @@ databaseChangeLog:
       id: seed-superadmin-tenant
       author: ashkan
       preConditions:
-        onFail: MARK_RAN
-        onError: HALT
+        - onFail: MARK_RAN
+        - onError: HALT
         - sqlCheck:
-            expectedResult: 0
+            expectedResult: "0"
             sql: "SELECT COUNT(*) FROM tenant WHERE tenant_id = '00000000-0000-0000-0000-000000000001'"
       changes:
         - insert:
@@ -14,13 +14,13 @@ databaseChangeLog:
             columns:
               - column:
                   name: tenant_id
-                  value: 00000000-0000-0000-0000-000000000001
+                  value: "00000000-0000-0000-0000-000000000001"
               - column:
                   name: name
-                  value: root-tenant
+                  value: "root-tenant"
               - column:
                   name: status
-                  value: ACTIVE
+                  value: "ACTIVE"
               - column:
                   name: created_at
                   valueNumeric: 0
@@ -32,10 +32,10 @@ databaseChangeLog:
       id: seed-superadmin-user
       author: ashkan
       preConditions:
-        onFail: MARK_RAN
-        onError: HALT
+        - onFail: MARK_RAN
+        - onError: HALT
         - sqlCheck:
-            expectedResult: 0
+            expectedResult: "0"
             sql: "SELECT COUNT(*) FROM tenant_user WHERE tenant_id = '00000000-0000-0000-0000-000000000001' AND user_id = 'superadmin-1'"
       changes:
         - insert:
@@ -43,19 +43,19 @@ databaseChangeLog:
             columns:
               - column:
                   name: tenant_id
-                  value: 00000000-0000-0000-0000-000000000001
+                  value: "00000000-0000-0000-0000-000000000001"
               - column:
                   name: user_id
-                  value: superadmin-1
+                  value: "superadmin-1"
               - column:
                   name: email
-                  value: ashkanghaffari48@gmail.com
+                  value: "ashkanghaffari48@gmail.com"
               - column:
                   name: role
-                  value: SUPERADMIN
+                  value: "SUPERADMIN"
               - column:
                   name: status
-                  value: ACTIVE
+                  value: "ACTIVE"
               - column:
                   name: created_at
                   valueNumeric: 0
