@@ -1,0 +1,61 @@
+databaseChangeLog:
+  - changeSet:
+      id: seed-superadmin-tenant
+      author: ashkan
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM tenant WHERE tenant_id = '00000000-0000-0000-0000-000000000001'"
+      changes:
+        - insert:
+            tableName: tenant
+            columns:
+              - column:
+                  name: tenant_id
+                  value: 00000000-0000-0000-0000-000000000001
+              - column:
+                  name: name
+                  value: root-tenant
+              - column:
+                  name: status
+                  value: ACTIVE
+              - column:
+                  name: created_at
+                  valueNumeric: 0
+              - column:
+                  name: deleted_at
+                  value: null
+
+  - changeSet:
+      id: seed-superadmin-user
+      author: ashkan
+      preConditions:
+        onFail: MARK_RAN
+        onError: HALT
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM tenant_user WHERE tenant_id = '00000000-0000-0000-0000-000000000001' AND user_id = 'superadmin-1'"
+      changes:
+        - insert:
+            tableName: tenant_user
+            columns:
+              - column:
+                  name: tenant_id
+                  value: 00000000-0000-0000-0000-000000000001
+              - column:
+                  name: user_id
+                  value: superadmin-1
+              - column:
+                  name: email
+                  value: ashkanghaffari48@gmail.com
+              - column:
+                  name: role
+                  value: SUPERADMIN
+              - column:
+                  name: status
+                  value: ACTIVE
+              - column:
+                  name: created_at
+                  valueNumeric: 0
