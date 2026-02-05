@@ -1,6 +1,6 @@
 package org.ashkan.ghaffari.adminconsole.dto.response;
 
-import org.ashkan.ghaffari.adminconsole.entity.IntegrationApiKeyStatus;
+import org.ashkan.ghaffari.common.integration.IntegrationApiKeyStatus;
 
 public record IntegrationApiKeyResponse(
     String apiKeyId,
