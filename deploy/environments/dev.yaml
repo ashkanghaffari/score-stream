@@ -1,3 +1,4 @@
 namespace: dev
 repoOwner: ashkanghaffari  # linked to GH org/user
-images: {}   # empty; CI fills per release
+images:
+  admin-console: latest
