@@ -1,0 +1,5 @@
+imagePullSecrets:
+  - name: ghcr-creds       # Kubernetes secret for authenticating to GHCR
+
+image:
+  pullPolicy: IfNotPresent # Avoid re-pulling if the image already exists locally

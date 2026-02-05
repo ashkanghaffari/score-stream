@@ -1,0 +1,8 @@
+auth:
+  username: admin_console_user
+  password: admin_console_pass
+  database: admin_console
+primary:
+  persistence:
+    enabled: true
+    size: 5Gi
