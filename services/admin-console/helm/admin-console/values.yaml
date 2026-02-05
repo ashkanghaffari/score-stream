@@ -87,6 +87,9 @@ config:
   jwt:
     accessTokenLifetimeSec: 900
     refreshTokenLifetimeDays: 30
+  google:
+    redirectUri: "http://localhost:8080/auth/google/callback"
 
 secrets:
   jwtSecretName: "admin-console-jwt"
+  googleSecretName: "admin-console-google"
