@@ -1,4 +1,7 @@
 package org.ashkan.ghaffari.adminconsole.dto.request;
 
-public record ValidateApiKeyRequest() {
-}
+import jakarta.validation.constraints.NotBlank;
+
+public record ValidateApiKeyRequest(
+    @NotBlank String keyHash
+) {}
