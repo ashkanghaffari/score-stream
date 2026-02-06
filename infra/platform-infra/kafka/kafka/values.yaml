@@ -1,0 +1,11 @@
+image:
+  repository: apache/kafka
+  tag: "4.1.1"
+  pullPolicy: IfNotPresent
+
+persistence:
+  size: 5Gi
+
+service:
+  port: 9092
+  controllerPort: 9093

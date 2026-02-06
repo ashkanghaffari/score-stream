@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "kafka.fullname" . }}
+spec:
+  serviceName: {{ include "kafka.fullname" . }}
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "kafka.name" . }}
+
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "kafka.name" . }}
+
+    spec:
+      containers:
+        - name: kafka
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          ports:
+            - containerPort: 9092
+            - containerPort: 9093
+
+          env:
+            - name: KAFKA_PROCESS_ROLES
+              value: broker,controller
+
+            - name: KAFKA_NODE_ID
+              value: "1"
+
+            - name: KAFKA_CLUSTER_ID
+              value: "MkU3OEVBNTcwNTJENDM2Qk"
+
+            - name: KAFKA_INTER_BROKER_LISTENER_NAME
+              value: PLAINTEXT
+
+            - name: KAFKA_CONTROLLER_LISTENER_NAMES
+              value: CONTROLLER
+
+            - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+              value: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+
+            - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+              value: 1@{{ include "kafka.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:9093
+
+            - name: KAFKA_LISTENERS
+              value: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+
+            - name: KAFKA_ADVERTISED_LISTENERS
+              value: PLAINTEXT://{{ include "kafka.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:9092
+
+            - name: KAFKA_HEAP_OPTS
+              value: "-Xmx384m -Xms384m"
+
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "768Mi"
+              cpu: "500m"
+
+          volumeMounts:
+            - name: kafka-data
+              mountPath: /var/lib/kafka/data
+
+  volumeClaimTemplates:
+    - metadata:
+        name: kafka-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size }}
