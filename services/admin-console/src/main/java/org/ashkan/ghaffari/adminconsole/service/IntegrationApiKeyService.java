@@ -2,17 +2,18 @@ package org.ashkan.ghaffari.adminconsole.service;
 
 import org.ashkan.ghaffari.adminconsole.dto.response.CreateIntegrationApiKeyResponse;
 import org.ashkan.ghaffari.adminconsole.dto.response.IntegrationApiKeyResponse;
+import org.ashkan.ghaffari.adminconsole.dto.response.ValidateApiKeyResponse;
 import org.ashkan.ghaffari.adminconsole.entity.Integration;
+import org.ashkan.ghaffari.adminconsole.dto.response.ValidateApiKeyReason;
 import org.ashkan.ghaffari.adminconsole.entity.IntegrationApiKey;
-import org.ashkan.ghaffari.adminconsole.entity.IntegrationApiKeyStatus;
+import org.ashkan.ghaffari.common.integration.IntegrationApiKeyStatus;
 import org.ashkan.ghaffari.adminconsole.repository.IntegrationApiKeyRepository;
 import org.ashkan.ghaffari.adminconsole.repository.IntegrationRepository;
 import org.ashkan.ghaffari.adminconsole.service.config.IntegrationApiKeyPolicyConfig;
+import org.ashkan.ghaffari.common.security.ApiKeyHasher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Base64;
@@ -106,13 +107,7 @@ public class IntegrationApiKeyService {
     }
 
     private String hashKey(String key) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(key.getBytes(StandardCharsets.UTF_8));
-            return Base64.getUrlEncoder().withoutPadding().encodeToString(hash);
-        } catch (Exception ex) {
-            throw new IllegalStateException("Error hashing API key", ex);
-        }
+        return ApiKeyHasher.hashKey(key);
     }
 
     private Long resolveExpiresAt(long createdAt) {
@@ -123,5 +118,38 @@ public class IntegrationApiKeyService {
         return Instant.ofEpochMilli(createdAt)
             .plusSeconds(ttlDays * 86400L)
             .toEpochMilli();
+    }
+
+    public ValidateApiKeyResponse validateApiKey(String keyHash) {
+        IntegrationApiKey integrationApiKey = integrationApiKeyRepository.findByKeyHash(keyHash).orElse(null);
+        if (integrationApiKey == null) {
+            return invalidResponse(ValidateApiKeyReason.NOT_FOUND);
+        }
+        if (integrationApiKey.getStatus() == IntegrationApiKeyStatus.REVOKED) {
+            return invalidResponse(ValidateApiKeyReason.REVOKED);
+        }
+        Long expiresAt = integrationApiKey.getExpiresAt();
+        if (expiresAt != null && expiresAt <= Instant.now().toEpochMilli()) {
+            return invalidResponse(ValidateApiKeyReason.EXPIRED);
+        }
+        return new ValidateApiKeyResponse(
+            true,
+            integrationApiKey.getTenantId(),
+            integrationApiKey.getIntegrationId(),
+            integrationApiKey.getStatus(),
+            integrationApiKey.getExpiresAt(),
+            null
+        );
+    }
+
+    private ValidateApiKeyResponse invalidResponse(ValidateApiKeyReason reason) {
+        return new ValidateApiKeyResponse(
+            false,
+            null,
+            null,
+            null,
+            null,
+            reason
+        );
     }
 }

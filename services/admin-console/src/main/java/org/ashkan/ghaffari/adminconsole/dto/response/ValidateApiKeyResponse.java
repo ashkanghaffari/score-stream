@@ -2,10 +2,11 @@ package org.ashkan.ghaffari.adminconsole.dto.response;
 
 import org.ashkan.ghaffari.common.integration.IntegrationApiKeyStatus;
 
-public record CreateIntegrationApiKeyResponse(
-    String apiKeyId,
-    String apiKey,
+public record ValidateApiKeyResponse(
+    boolean valid,
+    String tenantId,
+    String integrationId,
     IntegrationApiKeyStatus status,
-    Long createdAt,
-    Long expiresAt
+    Long expiresAt,
+    ValidateApiKeyReason reason
 ) {}

@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import org.ashkan.ghaffari.common.integration.IntegrationApiKeyStatus;
 
 @Entity
 @Table(
