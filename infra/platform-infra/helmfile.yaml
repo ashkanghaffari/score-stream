@@ -39,3 +39,8 @@ releases:
     namespace: data
     createNamespace: true
     chart: ./dynamodb/dynamodb
+
+  - name: kafka
+    namespace: data
+    createNamespace: true
+    chart: ./kafka/kafka
