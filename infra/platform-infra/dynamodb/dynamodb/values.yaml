@@ -1,0 +1,11 @@
+image:
+  repository: amazon/dynamodb-local
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  port: 8000
+
+persistence:
+  enabled: true
+  size: 1Gi
