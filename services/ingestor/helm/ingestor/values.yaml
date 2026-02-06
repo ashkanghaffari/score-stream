@@ -80,7 +80,7 @@ config:
   # -- When to show details for the /health endpoint (e.g., "never", "when-authorized", "always")
   healthShowDetails: "never"
   kafka:
-    bootstrapServers: "kafka:9092"
+    bootstrapServers: "kafka.data:9092"
   redis:
     host: "redis-master.data.svc.cluster.local"
     port: 6379
