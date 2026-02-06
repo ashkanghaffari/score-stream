@@ -34,3 +34,8 @@ releases:
     version: 19.5.0
     values:
       - redis/values.yaml
+
+  - name: dynamodb
+    namespace: data
+    createNamespace: true
+    chart: ./dynamodb/dynamodb
