@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ingestor.fullname" . }}-management
+  labels:
+    {{- include "ingestor.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.management.type }}
+  selector:
+    {{- include "ingestor.selectorLabels" . | nindent 4 }}
+  ports:
+    - name: management
+      port: {{ .Values.service.management.port }}
+      targetPort: management
+      protocol: TCP
