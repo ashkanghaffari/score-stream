@@ -28,13 +28,13 @@ resources:
 
 livenessProbe:
   path: /actuator/health/liveness
-  initialDelaySeconds: 30
+  initialDelaySeconds: 300
   periodSeconds: 10
   failureThreshold: 3
 
 readinessProbe:
   path: /actuator/health/readiness
-  initialDelaySeconds: 10
+  initialDelaySeconds: 300
   periodSeconds: 5
   failureThreshold: 3
 
