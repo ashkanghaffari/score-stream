@@ -2,5 +2,6 @@ namespace: dev
 repoOwner: ashkanghaffari  # linked to GH org/user
 images:
   admin-console: latest
+  ingestor: latest
 image:
   pullPolicy: Always
