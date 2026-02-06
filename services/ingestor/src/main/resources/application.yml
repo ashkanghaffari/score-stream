@@ -1,6 +1,6 @@
 spring:
   application:
-    name: ingestor  # used by Micrometer tags, logs, etc.
+    name: ingestor
   threads:
     virtual:
       enabled: true
@@ -23,11 +23,11 @@ spring:
       port: ${REDIS_PORT}
 
 server:
-  port: ${INGESTOR_SERVER_PORT}
+  port: ${SERVER_PORT:8080}
 
 management:
   server:
-    port: ${INGESTOR_MANAGEMENT_PORT}
+    port: ${MANAGEMENT_PORT:8081}
   endpoints:
     web:
       exposure:
@@ -47,3 +47,7 @@ management:
 logging:
   level:
     root: ${LOG_LEVEL_ROOT:INFO}
+
+dynamodb:
+  region: ${DYNAMODB_REGION}
+  endpoint: ${DYNAMODB_ENDPOINT}
