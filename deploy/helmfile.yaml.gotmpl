@@ -23,3 +23,12 @@ releases:
       - image:
           repository: ghcr.io/{{ .Values.repoOwner }}/admin-console
           tag: {{ (index .Values.images "admin-console") | default "latest" }}
+  - name: ingestor
+    labels: { app: ingestor }
+    namespace: {{ .Environment.Values.namespace }}
+    chart: ../services/ingestor/helm/ingestor
+    values:
+      - values/common.yaml
+      - image:
+          repository: ghcr.io/{{ .Values.repoOwner }}/ingestor
+          tag: {{ (index .Values.images "ingestor") | default "latest" }}
