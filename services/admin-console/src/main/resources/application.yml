@@ -72,3 +72,7 @@ admin:
       issuer: admin-console
       access-token-lifetime-sec: ${ADMIN_JWT_ACCESS_LIFETIME_SEC}
       refresh-token-lifetime-days: ${ADMIN_JWT_REFRESH_LIFETIME_DAYS}
+
+internal:
+  service:
+    token: ${INTERNAL_SERVICE_TOKEN}
