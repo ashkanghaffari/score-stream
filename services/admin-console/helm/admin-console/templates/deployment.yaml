@@ -32,6 +32,8 @@ spec:
             - secretRef:
                 name: {{ .Values.secrets.googleSecretName }}
             - secretRef:
+                name: {{ .Values.secrets.internalServiceTokenSecretName }}
+            - secretRef:
                 name: {{ .Values.secrets.internalServiceToken }}
           env:
             - name: "SERVER_PORT"

@@ -28,13 +28,13 @@ resources:
 
 livenessProbe:
   path: /actuator/health/liveness
-  initialDelaySeconds: 30
+  initialDelaySeconds: 300
   periodSeconds: 10
   failureThreshold: 3
 
 readinessProbe:
   path: /actuator/health/readiness
-  initialDelaySeconds: 10
+  initialDelaySeconds: 300
   periodSeconds: 5
   failureThreshold: 3
 
@@ -101,6 +101,9 @@ config:
     refreshTokenLifetimeDays: 30
   google:
     redirectUri: "http://localhost:8080/auth/google/callback"
+  dynamodb:
+    region: "us-west-2"
+    endpoint: "http://dynamodb.data.svc.cluster.local:8000"
 
 secrets:
   jwtSecretName: "admin-console-jwt"

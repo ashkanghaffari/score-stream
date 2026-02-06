@@ -12,3 +12,5 @@ data:
   ADMIN_JWT_ACCESS_LIFETIME_SEC: {{ .Values.config.jwt.accessTokenLifetimeSec | quote }}
   ADMIN_JWT_REFRESH_LIFETIME_DAYS: {{ .Values.config.jwt.refreshTokenLifetimeDays | quote }}
   GOOGLE_REDIRECT_URI: {{ .Values.config.google.redirectUri | quote }}
+  DYNAMODB_REGION: {{ .Values.config.dynamodb.region | quote }}
+  DYNAMODB_ENDPOINT: {{ .Values.config.dynamodb.endpoint | quote }}
