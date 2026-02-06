@@ -26,10 +26,22 @@ resources:
     cpu: 1                 # Hard CPU cap per pod (1 vCPU). Prevents a single pod from hogging CPU.
     memory: 1Gi            # Hard memory cap per pod. Exceeding this may OOM-kill the container.
 
+livenessProbe:
+  path: /actuator/health/liveness
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  path: /actuator/health/readiness
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  failureThreshold: 3
+
 hpa:
   enabled: true            # Toggle HPA resource on/off for this service.
-  minReplicas: 2           # Keep at least this many replicas (baseline capacity + HA).
-  maxReplicas: 5           # Upper bound to avoid runaway scaling in dev/test.
+  minReplicas: 1           # Keep at least this many replicas (baseline capacity + HA).
+  maxReplicas: 1           # Upper bound to avoid runaway scaling in dev/test.
   targetMemoryUtilizationPercentage: 80
   # Target average Memory utilization across READY pods (usage/request).
   # Example: with request=512Mi, 80% ≈ 410Mi per pod on average.
@@ -89,7 +101,11 @@ config:
     refreshTokenLifetimeDays: 30
   google:
     redirectUri: "http://localhost:8080/auth/google/callback"
+  dynamodb:
+    region: "us-west-2"
+    endpoint: "http://dynamodb.data.svc.cluster.local:8000"
 
 secrets:
   jwtSecretName: "admin-console-jwt"
   googleSecretName: "admin-console-google"
+  internalServiceToken: "internal-service-token"

@@ -6,10 +6,14 @@ spring:
       enabled: true
 
 server:
-  port: ${INFERENCE_SERVER_PORT}
+  port: ${SERVER_PORT:8080}
 
 openai:
   base-url: ${OPENAI_BASE_URL}
   model: ${OPENAI_MODEL}
   temperature: ${OPENAI_TEMP}
   max-tokens: ${OPENAI_MAX_TOKENS}
+
+dynamodb:
+  region: ${DYNAMODB_REGION:us-west-2}
+  endpoint: ${DYNAMODB_ENDPOINT:}

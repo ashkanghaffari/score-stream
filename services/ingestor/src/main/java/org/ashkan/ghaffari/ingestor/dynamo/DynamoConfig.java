@@ -18,12 +18,12 @@ public class DynamoConfig {
     @Bean
     public DynamoDbClient dynamoDbClient(
         @Value("${dynamodb.endpoint:}") String endpoint,
-        @Value("${dynamodb.region}") String region) {
+        @Value("${dynamodb.region:us-west-2}") String region) {
 
         DynamoDbClientBuilder builder = DynamoDbClient.builder()
             .region(Region.of(region));
 
-        if (endpoint != null && !endpoint.isBlank()) {
+        if (!endpoint.isBlank()) {
             builder.endpointOverride(URI.create(endpoint))
                 .credentialsProvider(
                     StaticCredentialsProvider.create(

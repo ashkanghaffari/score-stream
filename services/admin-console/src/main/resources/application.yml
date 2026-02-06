@@ -75,4 +75,4 @@ admin:
 
 internal:
   service:
-    token: ${INTERNAL_SERVICE_TOKEN}
+    token: ${INGESTOR_TO_ADMIN_CONSOLE_INTERNAL_TOKEN}

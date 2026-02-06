@@ -31,6 +31,8 @@ spec:
                 name: {{ .Values.secrets.jwtSecretName }}
             - secretRef:
                 name: {{ .Values.secrets.googleSecretName }}
+            - secretRef:
+                name: {{ .Values.secrets.internalServiceToken }}
           env:
             - name: "SERVER_PORT"
               value: "{{ .Values.ports.app }}"
@@ -45,17 +47,17 @@ spec:
               protocol: TCP
           readinessProbe:
             httpGet:
-              path: actuator/health/readiness
+              path: {{ .Values.readinessProbe.path }}
               port: management
-            initialDelaySeconds: 10
-            periodSeconds: 5
-            failureThreshold: 3
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           livenessProbe:
             httpGet:
-              path: actuator/health/liveness
+              path: {{ .Values.livenessProbe.path }}
               port: management
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            failureThreshold: 3
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
