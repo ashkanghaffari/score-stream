@@ -7,7 +7,6 @@ spring:
   kafka:
     bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
     consumer:
-      group-id: ws-publisher
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
       auto-offset-reset: earliest
@@ -16,14 +15,6 @@ spring:
       value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
       acks: all
       retries: 3
-
-  data:
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-
-server:
-  port: ${SERVER_PORT:8080}
 
 management:
   server:

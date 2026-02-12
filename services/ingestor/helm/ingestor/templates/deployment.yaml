@@ -28,14 +28,9 @@ spec:
             - secretRef:
                 name: {{ .Values.secrets.internalServiceToken }}
           env:
-            - name: "SERVER_PORT"
-              value: "{{ .Values.ports.app }}"
             - name: "MANAGEMENT_PORT"
               value: "{{ .Values.ports.management }}"
           ports:
-            - name: app
-              containerPort: {{ .Values.ports.app }}
-              protocol: TCP
             - name: management
               containerPort: {{ .Values.ports.management }}
               protocol: TCP

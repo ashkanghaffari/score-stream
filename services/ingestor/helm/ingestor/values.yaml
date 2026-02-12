@@ -6,13 +6,9 @@ image:
   tag: latest                                         # Image tag (can be overridden per deploy)
 
 ports:
-  app: 8080                                           # Main application port (Spring Boot app)
   management: 8081                                    # Secondary management/Actuator port
 
 service:
-  app:
-    type: ClusterIP                                   # Internal-only Service for app traffic
-    port: 80                                          # Exposed Service port (maps to container:8080)
   management:
     type: ClusterIP                                   # Internal-only Service for management/metrics
     port: 8081                                        # Exposed Service port (maps to container:8081)
@@ -68,11 +64,6 @@ hpa:
           periodSeconds: 60
                            # Evaluate allowed decrease over a 60s window.
 
-
-ingress:
-  enabled: true
-  appHost: ingestor.localhost
-  managementHost: ingestor-mgmt.localhost
 
 # -- ServiceMonitor Configuration
 # This section controls the creation of a ServiceMonitor resource for Prometheus.
