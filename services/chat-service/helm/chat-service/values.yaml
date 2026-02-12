@@ -1,0 +1,95 @@
+nameOverride: ""
+fullnameOverride: "chat-service"
+
+image:
+  repository: ghcr.io/ashkanghaffari/chat-service  # Container image registry/repo for this service
+  tag: latest                                       # Image tag (can be overridden per deploy)
+
+ports:
+  app: 8080                                         # Main application port (WebSocket ingress)
+  management: 8081                                  # Secondary management/Actuator port
+
+service:
+  app:
+    type: ClusterIP                                 # Internal-only Service for app traffic
+    port: 80                                        # Exposed Service port (maps to container:8080)
+  management:
+    type: ClusterIP                                 # Internal-only Service for management/metrics
+    port: 8081                                      # Exposed Service port (maps to container:8081)
+
+resources:
+  requests:
+    cpu: 250m              # Guaranteed CPU share per pod (0.25 vCPU). HPA uses this to compute % utilization.
+    memory: 512Mi          # Guaranteed memory reservation per pod. Helps scheduler place pods reliably.
+  limits:
+    cpu: 1                 # Hard CPU cap per pod (1 vCPU). Prevents a single pod from hogging CPU.
+    memory: 1Gi            # Hard memory cap per pod. Exceeding this may OOM-kill the container.
+
+livenessProbe:
+  path: /actuator/health/liveness
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  path: /actuator/health/readiness
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  failureThreshold: 3
+
+hpa:
+  enabled: true            # Toggle HPA resource on/off for this service.
+  minReplicas: 1           # Keep at least this many replicas (baseline capacity + HA).
+  maxReplicas: 1           # Upper bound to avoid runaway scaling in dev/test.
+  targetMemoryUtilizationPercentage: 80
+  # Target average Memory utilization across READY pods (usage/request).
+  # Example: with request=512Mi, 80% ≈ 410Mi per pod on average.
+  targetCPUUtilizationPercentage: 70
+                           # Target average CPU utilization across READY pods (usage/request).
+                           # Example: with request=500m, 70% ≈ 350m per pod on average.
+
+  # Optional: dampen flapping (scale behavior tuning)
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 0
+                           # React immediately to sustained spikes (no delay before scaling up).
+      policies:
+        - type: Percent
+          value: 100       # Allow up to 100% increase per step (e.g., 2 -> 4 replicas) within the period.
+          periodSeconds: 60
+                           # Evaluate allowed increase over a 60s window.
+    scaleDown:
+      stabilizationWindowSeconds: 300
+                           # Wait 5 minutes before scaling down (smooth out transient dips).
+      policies:
+        - type: Percent
+          value: 50       # Allow up to 50% reduction per step (e.g., 4 -> 2) within the period.
+          periodSeconds: 60
+
+ingress:
+  enabled: true
+  appHost: chat-service.localhost
+  managementHost: chat-service-mgmt.localhost
+
+# -- ServiceMonitor Configuration
+# This section controls the creation of a ServiceMonitor resource for Prometheus.
+serviceMonitor:
+  # -- enable the creation of a ServiceMonitor
+  enabled: true
+
+  # -- How often Prometheus should scrape the metrics endpoint
+  interval: 15s
+
+# -- Application-specific configuration managed by a ConfigMap
+config:
+  # -- Root logging level for the application
+  logLevel: "INFO"
+  # -- Comma-separated list of actuator endpoints to expose
+  actuatorEndpoints: "health,info,metrics,prometheus"
+  # -- When to show details for the /health endpoint (e.g., "never", "when-authorized", "always")
+  healthShowDetails: "never"
+  kafka:
+    bootstrapServers: "kafka.data:9092"
+  redis:
+    host: "redis-master.data.svc.cluster.local"
+    port: 6379
