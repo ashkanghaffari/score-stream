@@ -1,0 +1,76 @@
+nameOverride: ""
+fullnameOverride: "inference-analyzer"
+
+image:
+  repository: ghcr.io/ashkanghaffari/inference-analyzer  # Container image registry/repo for this service
+  tag: latest                                            # Image tag (can be overridden per deploy)
+
+ports:
+  app: 8080                                              # Main application port (Spring Boot app)
+
+service:
+  app:
+    type: ClusterIP                                      # Internal-only Service for app traffic
+    port: 80                                             # Exposed Service port (maps to container:8080)
+
+resources:
+  requests:
+    cpu: 250m              # Guaranteed CPU share per pod (0.25 vCPU). HPA uses this to compute % utilization.
+    memory: 512Mi          # Guaranteed memory reservation per pod. Helps scheduler place pods reliably.
+  limits:
+    cpu: 1                 # Hard CPU cap per pod (1 vCPU). Prevents a single pod from hogging CPU.
+    memory: 1Gi            # Hard memory cap per pod. Exceeding this may OOM-kill the container.
+
+livenessProbe:
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  initialDelaySeconds: 20
+  periodSeconds: 5
+  failureThreshold: 3
+
+hpa:
+  enabled: true            # Toggle HPA resource on/off for this service.
+  minReplicas: 1           # Keep at least this many replicas (baseline capacity + HA).
+  maxReplicas: 1           # Upper bound to avoid runaway scaling in dev/test.
+  targetMemoryUtilizationPercentage: 80
+  # Target average Memory utilization across READY pods (usage/request).
+  # Example: with request=512Mi, 80% ≈ 410Mi per pod on average.
+  targetCPUUtilizationPercentage: 70
+                           # Target average CPU utilization across READY pods (usage/request).
+                           # Example: with request=500m, 70% ≈ 350m per pod on average.
+
+  # Optional: dampen flapping (scale behavior tuning)
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 0
+                           # React immediately to sustained spikes (no delay before scaling up).
+      policies:
+        - type: Percent
+          value: 100       # Allow up to 100% increase per step (e.g., 2 -> 4 replicas) within the period.
+          periodSeconds: 60
+                           # Evaluate allowed increase over a 60s window.
+    scaleDown:
+      stabilizationWindowSeconds: 300
+                           # Wait 5 minutes before scaling down (smooth out transient dips).
+      policies:
+        - type: Percent
+          value: 50       # Allow up to 50% reduction per step (e.g., 4 -> 2) within the period.
+          periodSeconds: 60
+                           # Evaluate allowed decrease over a 60s window.
+
+# -- Application-specific configuration managed by a ConfigMap
+config:
+  openai:
+    baseUrl: "https://api.openai.com/v1"
+    model: "gpt-4o-mini"
+    temperature: 0.2
+    maxTokens: 200
+  dynamodb:
+    region: "us-west-2"
+    endpoint: "http://dynamodb.data.svc.cluster.local:8000"
+
+secrets:
+  openaiSecretName: "openai-api-key"

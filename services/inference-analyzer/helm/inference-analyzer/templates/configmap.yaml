@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "inference-analyzer.fullname" . }}-config
+  labels:
+    {{- include "inference-analyzer.labels" . | nindent 4 }}
+data:
+  OPENAI_BASE_URL: {{ .Values.config.openai.baseUrl | quote }}
+  OPENAI_MODEL: {{ .Values.config.openai.model | quote }}
+  OPENAI_TEMP: {{ .Values.config.openai.temperature | quote }}
+  OPENAI_MAX_TOKENS: {{ .Values.config.openai.maxTokens | quote }}
+  DYNAMODB_REGION: {{ .Values.config.dynamodb.region | quote }}
+  DYNAMODB_ENDPOINT: {{ .Values.config.dynamodb.endpoint | quote }}

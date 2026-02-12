@@ -32,3 +32,12 @@ releases:
       - image:
           repository: ghcr.io/{{ .Values.repoOwner }}/ingestor
           tag: {{ (index .Values.images "ingestor") | default "latest" }}
+  - name: inference-analyzer
+    labels: { app: inference-analyzer }
+    namespace: {{ .Environment.Values.namespace }}
+    chart: ../services/inference-analyzer/helm/inference-analyzer
+    values:
+      - values/common.yaml
+      - image:
+          repository: ghcr.io/{{ .Values.repoOwner }}/inference-analyzer
+          tag: {{ (index .Values.images "inference-analyzer") | default "latest" }}

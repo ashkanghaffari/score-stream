@@ -3,5 +3,6 @@ repoOwner: ashkanghaffari  # linked to GH org/user
 images:
   admin-console: latest
   ingestor: latest
+  inference-analyzer: latest
 image:
   pullPolicy: Always
