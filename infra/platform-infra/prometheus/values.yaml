@@ -28,6 +28,11 @@ alertmanager:
 
 grafana:
   enabled: true                         # Deploy the built-in Grafana that ships with kube-prometheus-stack
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      access: proxy
+      url: http://loki.monitoring:3100
 
 defaultRules:
   create: true                          # Install default recording/alerting rules (basic out-of-the-box alerts)

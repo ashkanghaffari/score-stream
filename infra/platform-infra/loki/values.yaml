@@ -1,0 +1,42 @@
+deploymentMode: SingleBinary   # Run Loki as one all-in-one process (best for dev/minikube)
+
+loki:
+  auth_enabled: false          # Disable auth (safe for local/dev only)
+  useTestSchema: true          # Auto-generate temporary storage schema (dev convenience)
+
+  commonConfig:
+    replication_factor: 1      # No replication; single node Loki
+
+  storage:
+    type: filesystem           # Store logs on local disk (not object storage)
+    bucketNames:               # Required by chart even for filesystem mode
+      chunks: chunks           # Chunk data storage label
+      ruler: ruler             # Rule storage label
+      admin: admin             # Admin storage label
+
+singleBinary:
+  replicas: 1                  # Run one Loki instance
+
+backend:
+  replicas: 0                  # Disable distributed backend component
+
+read:
+  replicas: 0                  # Disable distributed read component
+
+write:
+  replicas: 0                  # Disable distributed write component
+
+chunksCache:
+  enabled: false               # Disable chunk caching (saves memory in dev)
+
+resultsCache:
+  enabled: false               # Disable query result caching (saves memory)
+
+gateway:
+  enabled: false               # Disable API gateway (not needed in single node)
+
+lokiCanary:
+  enabled: false               # Disable canary health test pod
+
+test:
+  enabled: false               # Disable Helm test hooks (avoids canary requirement)

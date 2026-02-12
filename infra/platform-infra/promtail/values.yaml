@@ -1,0 +1,7 @@
+config:
+  clients:
+    - url: http://loki.monitoring:3100/loki/api/v1/push
+        # Loki HTTP endpoint where Promtail pushes logs
+        # Format: http://<service>.<namespace>:<port>/loki/api/v1/push
+        # Uses internal Kubernetes DNS (service-to-service communication)
+      # This is NOT something you access in a browser
