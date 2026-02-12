@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.ingestor.redis;
+package org.ashkan.ghaffari.chatservice.redis;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
