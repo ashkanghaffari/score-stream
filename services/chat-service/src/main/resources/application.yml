@@ -1,12 +1,17 @@
 spring:
   application:
-    name: ingestor
+    name: chat-service
   threads:
     virtual:
       enabled: true
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
   kafka:
     bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
     consumer:
+      group-id: ws-publisher
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
       auto-offset-reset: earliest
@@ -15,6 +20,9 @@ spring:
       value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
       acks: all
       retries: 3
+
+server:
+  port: ${SERVER_PORT:8080}
 
 management:
   server:
@@ -31,14 +39,10 @@ management:
   metrics:
     distribution:
       percentiles-histogram:
-        http.server.requests: true   # needed for p95/p99 latency charts
+        http.server.requests: true
     tags:
       application: ${spring.application.name}
 
 logging:
   level:
     root: ${LOG_LEVEL_ROOT:INFO}
-
-dynamodb:
-  region: ${DYNAMODB_REGION}
-  endpoint: ${DYNAMODB_ENDPOINT}

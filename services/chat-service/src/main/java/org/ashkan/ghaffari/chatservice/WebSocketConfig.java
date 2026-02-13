@@ -1,6 +1,6 @@
-package org.ashkan.ghaffari.ingestor.ws;
+package org.ashkan.ghaffari.chatservice;
 
-import org.ashkan.ghaffari.ingestor.ws.handler.inbound.IngestWebSocketHandler;
+import org.ashkan.ghaffari.chatservice.handler.inbound.IngestWebSocketHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;

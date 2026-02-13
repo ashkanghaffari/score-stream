@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.ingestor.redis;
+package org.ashkan.ghaffari.chatservice.redis.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

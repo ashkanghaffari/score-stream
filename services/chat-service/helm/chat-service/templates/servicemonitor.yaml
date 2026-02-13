@@ -1,0 +1,17 @@
+{{- if .Values.serviceMonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "chat-service.fullname" . }}-management
+  labels:
+    {{- include "chat-service.labels" . | nindent 4 }}
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      {{- include "chat-service.selectorLabels" . | nindent 6 }}
+  endpoints:
+    - port: management
+      path: actuator/prometheus
+      interval: {{ .Values.serviceMonitor.interval }}
+{{- end }}

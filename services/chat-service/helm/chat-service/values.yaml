@@ -1,18 +1,21 @@
 nameOverride: ""
-fullnameOverride: "ingestor"
+fullnameOverride: "chat-service"
 
 image:
-  repository: ghcr.io/ashkanghaffari/ingestor  # Container image registry/repo for this service
-  tag: latest                                         # Image tag (can be overridden per deploy)
+  repository: ghcr.io/ashkanghaffari/chat-service  # Container image registry/repo for this service
+  tag: latest                                       # Image tag (can be overridden per deploy)
 
 ports:
-  management: 8081                                    # Secondary management/Actuator port
+  app: 8080                                         # Main application port (WebSocket ingress)
+  management: 8081                                  # Secondary management/Actuator port
 
 service:
+  app:
+    type: ClusterIP                                 # Internal-only Service for app traffic
+    port: 80                                        # Exposed Service port (maps to container:8080)
   management:
-    type: ClusterIP                                   # Internal-only Service for management/metrics
-    port: 8081                                        # Exposed Service port (maps to container:8081)
-
+    type: ClusterIP                                 # Internal-only Service for management/metrics
+    port: 8081                                      # Exposed Service port (maps to container:8081)
 
 resources:
   requests:
@@ -62,8 +65,11 @@ hpa:
         - type: Percent
           value: 50       # Allow up to 50% reduction per step (e.g., 4 -> 2) within the period.
           periodSeconds: 60
-                           # Evaluate allowed decrease over a 60s window.
 
+ingress:
+  enabled: true
+  appHost: chat-service.localhost
+  managementHost: chat-service-mgmt.localhost
 
 # -- ServiceMonitor Configuration
 # This section controls the creation of a ServiceMonitor resource for Prometheus.
@@ -87,9 +93,3 @@ config:
   redis:
     host: "redis-master.data.svc.cluster.local"
     port: 6379
-  dynamodb:
-    region: "us-west-2"
-    endpoint: "http://dynamodb.data.svc.cluster.local:8000"
-
-secrets:
-  internalServiceToken: "internal-service-token"

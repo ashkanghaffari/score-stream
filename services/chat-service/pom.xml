@@ -12,9 +12,9 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>ingestor</artifactId>
-    <name>ingestor</name>
-    <description>Spring Boot service for the ingestor component of score stream</description>
+    <artifactId>chat-service</artifactId>
+    <name>chat-service</name>
+    <description>Spring Boot service for chat ingress</description>
 
     <dependencies>
         <dependency>
@@ -24,8 +24,18 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
         <dependency>
@@ -48,32 +58,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>software.amazon.awssdk</groupId>
-            <artifactId>dynamodb</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>software.amazon.awssdk</groupId>
-            <artifactId>dynamodb-enhanced</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.ibm.icu</groupId>
-            <artifactId>icu4j</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-analysis-common</artifactId>
-        </dependency>
-
     </dependencies>
 
     <build>

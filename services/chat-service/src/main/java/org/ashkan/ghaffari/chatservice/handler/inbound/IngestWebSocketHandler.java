@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.ingestor.ws.handler.inbound;
+package org.ashkan.ghaffari.chatservice.handler.inbound;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -6,10 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ashkan.ghaffari.common.ws.dto.ChatTextMessage;
 import org.ashkan.ghaffari.common.ws.dto.IngestMessage;
 import org.ashkan.ghaffari.common.ws.dto.MessageType;
-import org.ashkan.ghaffari.ingestor.redis.IdempotencyRepository;
-import org.ashkan.ghaffari.ingestor.ws.ChatIdHandshakeInterceptor;
-import org.ashkan.ghaffari.ingestor.logging.LoggingContext;
-import org.ashkan.ghaffari.ingestor.ws.SessionRegistry;
+import org.ashkan.ghaffari.chatservice.logging.LoggingContext;
+import org.ashkan.ghaffari.chatservice.redis.IdempotencyRepository;
+import org.ashkan.ghaffari.chatservice.ChatIdHandshakeInterceptor;
+import org.ashkan.ghaffari.chatservice.SessionRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -156,7 +156,7 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
 
     private void sendError(WebSocketSession session, String reason) {
         try {
-            session.sendMessage(new org.springframework.web.socket.TextMessage("{\"error\":\"" + reason + "\"}"));
+            session.sendMessage(new TextMessage("{\"error\":\"" + reason + "\"}"));
         } catch (Exception ignored) {}
     }
 

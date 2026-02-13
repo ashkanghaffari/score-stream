@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.ingestor.ws;
+package org.ashkan.ghaffari.chatservice;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;

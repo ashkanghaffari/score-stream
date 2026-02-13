@@ -25,6 +25,7 @@
         <module>services/ingestor</module>
         <module>services/inference-analyzer</module>
         <module>services/admin-console</module>
+        <module>services/chat-service</module>
     </modules>
 
     <dependencyManagement>
