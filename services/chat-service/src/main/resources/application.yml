@@ -46,3 +46,10 @@ management:
 logging:
   level:
     root: ${LOG_LEVEL_ROOT:INFO}
+
+
+app:
+  redis:
+    idempotency:
+      prefix: chat:idempotency
+      ttl: 10m

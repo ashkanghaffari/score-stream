@@ -1,7 +1,7 @@
-package org.ashkan.ghaffari.chatservice.chat;
+package org.ashkan.ghaffari.chatservice.chat.ws.config;
 
 import org.ashkan.ghaffari.chatservice.security.interceptor.ChatIdHandshakeInterceptor;
-import org.ashkan.ghaffari.chatservice.chat.handler.inbound.IngestWebSocketHandler;
+import org.ashkan.ghaffari.chatservice.chat.ws.handler.inbound.IngestWebSocketHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;

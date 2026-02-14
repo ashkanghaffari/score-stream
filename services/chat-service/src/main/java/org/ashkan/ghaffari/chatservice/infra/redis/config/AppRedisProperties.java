@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.chatservice.infra.config;
+package org.ashkan.ghaffari.chatservice.infra.redis.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

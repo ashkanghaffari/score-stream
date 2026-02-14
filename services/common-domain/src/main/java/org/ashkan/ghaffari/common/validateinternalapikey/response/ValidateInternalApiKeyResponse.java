@@ -8,5 +8,5 @@ public record ValidateInternalApiKeyResponse(
     String integrationId,
     IntegrationApiKeyStatus status,
     Long expiresAt,
-    ValidateApiKeyReason reason
+    ValidateInternalApiKeyReason reason
 ) {}

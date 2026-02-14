@@ -1,7 +1,7 @@
-package org.ashkan.ghaffari.chatservice.infra.redis;
+package org.ashkan.ghaffari.chatservice.infra.redis.repository;
 
-import org.ashkan.ghaffari.chatservice.infra.MessageIdempotencyId;
-import org.ashkan.ghaffari.chatservice.infra.config.AppRedisProperties;
+import org.ashkan.ghaffari.chatservice.chat.ws.idempotency.MessageIdempotencyId;
+import org.ashkan.ghaffari.chatservice.infra.redis.config.AppRedisProperties;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 

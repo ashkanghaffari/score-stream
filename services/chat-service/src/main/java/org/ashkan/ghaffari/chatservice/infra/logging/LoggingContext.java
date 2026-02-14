@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.chatservice.logging;
+package org.ashkan.ghaffari.chatservice.infra.logging;
 
 import org.slf4j.MDC;
 

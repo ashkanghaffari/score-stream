@@ -1,9 +1,9 @@
-package org.ashkan.ghaffari.chatservice.chat.handler.outbound;
+package org.ashkan.ghaffari.chatservice.chat.ws.handler.outbound;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ashkan.ghaffari.common.ws.dto.ChatTextMessage;
 import org.ashkan.ghaffari.chatservice.security.interceptor.ChatIdHandshakeInterceptor;
-import org.ashkan.ghaffari.chatservice.chat.SessionRegistry;
+import org.ashkan.ghaffari.chatservice.chat.ws.session.SessionRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;

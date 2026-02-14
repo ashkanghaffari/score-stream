@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.chatservice.chat;
+package org.ashkan.ghaffari.chatservice.chat.ws.session;
 
 import org.ashkan.ghaffari.chatservice.security.interceptor.ChatIdHandshakeInterceptor;
 import org.springframework.stereotype.Component;

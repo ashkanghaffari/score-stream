@@ -1,4 +1,4 @@
-package org.ashkan.ghaffari.chatservice.chat.idempotency;
+package org.ashkan.ghaffari.chatservice.chat.ws.idempotency;
 
 import java.util.Objects;
 

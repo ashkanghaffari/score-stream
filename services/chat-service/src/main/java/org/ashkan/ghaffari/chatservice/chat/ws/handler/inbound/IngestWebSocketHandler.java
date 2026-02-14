@@ -1,16 +1,16 @@
-package org.ashkan.ghaffari.chatservice.chat.handler.inbound;
+package org.ashkan.ghaffari.chatservice.chat.ws.handler.inbound;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.ashkan.ghaffari.chatservice.chat.idempotency.MessageIdempotencyId;
+import org.ashkan.ghaffari.chatservice.chat.ws.idempotency.MessageIdempotencyId;
 import org.ashkan.ghaffari.common.ws.dto.ChatTextMessage;
 import org.ashkan.ghaffari.common.ws.dto.IngestMessage;
 import org.ashkan.ghaffari.common.ws.dto.MessageType;
 import org.ashkan.ghaffari.chatservice.infra.logging.LoggingContext;
 import org.ashkan.ghaffari.chatservice.infra.redis.repository.MessageIdempotencyRepository;
 import org.ashkan.ghaffari.chatservice.security.interceptor.ChatIdHandshakeInterceptor;
-import org.ashkan.ghaffari.chatservice.chat.SessionRegistry;
+import org.ashkan.ghaffari.chatservice.chat.ws.session.SessionRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
