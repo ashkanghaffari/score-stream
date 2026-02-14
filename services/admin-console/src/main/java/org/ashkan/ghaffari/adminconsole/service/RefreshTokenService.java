@@ -5,7 +5,7 @@ import org.ashkan.ghaffari.adminconsole.dto.response.RefreshTokenResult;
 import org.ashkan.ghaffari.adminconsole.entity.RefreshToken;
 import org.ashkan.ghaffari.adminconsole.entity.TenantUser;
 import org.ashkan.ghaffari.adminconsole.repository.RefreshTokenRepository;
-import org.ashkan.ghaffari.adminconsole.security.token.JwtTokenConfig;
+import org.ashkan.ghaffari.adminconsole.security.config.properties.JwtTokenProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,12 +21,12 @@ import java.util.Base64;
 public class RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
-    private final JwtTokenConfig jwtConfig;
+    private final JwtTokenProperties jwtConfig;
 
     private static final SecureRandom secureRandom = new SecureRandom();
     private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder().withoutPadding();
 
-    public RefreshTokenService(RefreshTokenRepository refreshTokenRepository, JwtTokenConfig jwtConfig) {
+    public RefreshTokenService(RefreshTokenRepository refreshTokenRepository, JwtTokenProperties jwtConfig) {
         this.refreshTokenRepository = refreshTokenRepository;
         this.jwtConfig = jwtConfig;
     }

@@ -1,15 +1,16 @@
-package org.ashkan.ghaffari.chatservice.handler.inbound;
+package org.ashkan.ghaffari.chatservice.chat.handler.inbound;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.ashkan.ghaffari.chatservice.chat.idempotency.MessageIdempotencyId;
 import org.ashkan.ghaffari.common.ws.dto.ChatTextMessage;
 import org.ashkan.ghaffari.common.ws.dto.IngestMessage;
 import org.ashkan.ghaffari.common.ws.dto.MessageType;
-import org.ashkan.ghaffari.chatservice.logging.LoggingContext;
-import org.ashkan.ghaffari.chatservice.redis.IdempotencyRepository;
-import org.ashkan.ghaffari.chatservice.ChatIdHandshakeInterceptor;
-import org.ashkan.ghaffari.chatservice.SessionRegistry;
+import org.ashkan.ghaffari.chatservice.infra.logging.LoggingContext;
+import org.ashkan.ghaffari.chatservice.infra.redis.repository.MessageIdempotencyRepository;
+import org.ashkan.ghaffari.chatservice.security.interceptor.ChatIdHandshakeInterceptor;
+import org.ashkan.ghaffari.chatservice.chat.SessionRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -32,14 +33,14 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
 
     private final KafkaTemplate<String, byte[]> kafka;
     private final ObjectMapper mapper;
-    private final IdempotencyRepository idempotencyRepository;
+    private final MessageIdempotencyRepository messageIdempotencyRepository;
     private final SessionRegistry sessionRegistry;
 
     public IngestWebSocketHandler(KafkaTemplate<String, byte[]> kafka, ObjectMapper mapper,
-                                  IdempotencyRepository idempotencyRepository, SessionRegistry sessionRegistry) {
+                                  MessageIdempotencyRepository messageIdempotencyRepository, SessionRegistry sessionRegistry) {
         this.kafka = kafka;
         this.mapper = mapper;
-        this.idempotencyRepository = idempotencyRepository;
+        this.messageIdempotencyRepository = messageIdempotencyRepository;
         this.sessionRegistry = sessionRegistry;
     }
 
@@ -84,8 +85,12 @@ public class IngestWebSocketHandler extends TextWebSocketHandler {
                 return;
             }
 
-            String tenantIdempotencyId = incoming.tenantId() + ":" + incoming.appId() + ":" + incoming.idempotencyId();
-            if (!idempotencyRepository.tryStore(tenantIdempotencyId)) {
+            MessageIdempotencyId messageIdempotencyId = MessageIdempotencyId.of(
+                incoming.tenantId(),
+                incoming.appId(),
+                incoming.idempotencyId()
+            );
+            if (!messageIdempotencyRepository.tryStore(messageIdempotencyId)) {
                 log.debug("Duplicate message, rejecting processing");
                 sendError(session, "Duplicate idempotency key");
                 return;

@@ -1,9 +1,9 @@
-package org.ashkan.ghaffari.adminconsole.service.config;
+package org.ashkan.ghaffari.adminconsole.security.config.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "admin.integration.api-keys")
-public class IntegrationApiKeyPolicyConfig {
+public class IntegrationApiKeyPolicyProperties {
     private Integer defaultTtlDays;
 
     public Integer getDefaultTtlDays() {

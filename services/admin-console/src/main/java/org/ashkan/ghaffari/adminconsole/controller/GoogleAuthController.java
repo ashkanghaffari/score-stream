@@ -3,7 +3,7 @@ package org.ashkan.ghaffari.adminconsole.controller;
 import jakarta.servlet.http.HttpSession;
 import org.ashkan.ghaffari.adminconsole.dto.request.RefreshTokenRequest;
 import org.ashkan.ghaffari.adminconsole.dto.response.GenerateTokenResponse;
-import org.ashkan.ghaffari.adminconsole.security.config.GoogleIdpConfig;
+import org.ashkan.ghaffari.adminconsole.security.config.properties.GoogleIdpProperties;
 import org.ashkan.ghaffari.adminconsole.service.GoogleAuthService;
 import org.ashkan.ghaffari.adminconsole.service.TenantLookupService;
 import org.springframework.http.HttpHeaders;
@@ -26,15 +26,15 @@ public class GoogleAuthController {
 
     private final GoogleAuthService googleAuthService;
 
-    private final GoogleIdpConfig googleIdpConfig;
+    private final GoogleIdpProperties googleIdpProperties;
 
     private final TenantLookupService tenantLookupService;
 
     public GoogleAuthController(GoogleAuthService googleAuthService,
-                                GoogleIdpConfig googleIdpConfig,
+                                GoogleIdpProperties googleIdpProperties,
                                 TenantLookupService tenantLookupService) {
         this.googleAuthService = googleAuthService;
-        this.googleIdpConfig = googleIdpConfig;
+        this.googleIdpProperties = googleIdpProperties;
         this.tenantLookupService = tenantLookupService;
     }
 
@@ -53,10 +53,10 @@ public class GoogleAuthController {
         session.setAttribute("oauth_nonce", nonce);
         session.setAttribute("oauth_tenant_id", tenantId);
 
-        String authUrl = googleIdpConfig.getAuthorizationUri()
+        String authUrl = googleIdpProperties.getAuthorizationUri()
             + "?response_type=code"
-            + "&client_id=" + googleIdpConfig.getClientId()
-            + "&redirect_uri=" + googleIdpConfig.getRedirectUri()
+            + "&client_id=" + googleIdpProperties.getClientId()
+            + "&redirect_uri=" + googleIdpProperties.getRedirectUri()
             + "&scope=openid%20email%20profile"
             + "&access_type=offline"
             + "&prompt=consent"

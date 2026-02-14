@@ -1,9 +1,9 @@
-package org.ashkan.ghaffari.adminconsole.security.config;
+package org.ashkan.ghaffari.adminconsole.security.config.properties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.List;
 
 @ConfigurationProperties(prefix = "admin.security.google")
-public class GoogleIdpConfig {
+public class GoogleIdpProperties {
 
     private String clientId;
     private String clientSecret;

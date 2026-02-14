@@ -18,8 +18,8 @@ import org.ashkan.ghaffari.adminconsole.dto.response.GoogleTokenResponse;
 import org.ashkan.ghaffari.adminconsole.dto.response.RefreshTokenResult;
 import org.ashkan.ghaffari.adminconsole.dto.response.SessionInfo;
 import org.ashkan.ghaffari.adminconsole.dto.response.UserInfo;
-import org.ashkan.ghaffari.adminconsole.security.config.GoogleIdpConfig;
-import org.ashkan.ghaffari.adminconsole.security.token.JwtTokenConfig;
+import org.ashkan.ghaffari.adminconsole.security.config.properties.GoogleIdpProperties;
+import org.ashkan.ghaffari.adminconsole.security.config.properties.JwtTokenProperties;
 import org.ashkan.ghaffari.adminconsole.entity.RefreshToken;
 import org.ashkan.ghaffari.adminconsole.entity.TenantUser;
 import org.ashkan.ghaffari.adminconsole.exception.InvalidExternalClaimException;
@@ -41,16 +41,16 @@ public class GoogleAuthService {
 
     private static final long CLOCK_SKEW_SECONDS = 60;
 
-    private final GoogleIdpConfig googleConfig;
-    private final JwtTokenConfig jwtConfig;
+    private final GoogleIdpProperties googleConfig;
+    private final JwtTokenProperties jwtConfig;
     private final TenantUserService tenantUserService;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
     private final Validator validator;
 
     public GoogleAuthService(
-        GoogleIdpConfig googleConfig,
-        JwtTokenConfig jwtConfig,
+        GoogleIdpProperties googleConfig,
+        JwtTokenProperties jwtConfig,
         TenantUserService tenantUserService,
         JwtService jwtService,
         RefreshTokenService refreshTokenService,

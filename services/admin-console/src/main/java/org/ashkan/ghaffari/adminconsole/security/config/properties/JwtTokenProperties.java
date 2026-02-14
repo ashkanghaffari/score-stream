@@ -1,9 +1,9 @@
-package org.ashkan.ghaffari.adminconsole.security.token;
+package org.ashkan.ghaffari.adminconsole.security.config.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "admin.security.jwt")
-public class JwtTokenConfig {
+public class JwtTokenProperties {
 
     private String secret;
     private String issuer;

@@ -9,7 +9,7 @@ import org.ashkan.ghaffari.adminconsole.entity.IntegrationApiKey;
 import org.ashkan.ghaffari.common.integration.IntegrationApiKeyStatus;
 import org.ashkan.ghaffari.adminconsole.repository.IntegrationApiKeyRepository;
 import org.ashkan.ghaffari.adminconsole.repository.IntegrationRepository;
-import org.ashkan.ghaffari.adminconsole.service.config.IntegrationApiKeyPolicyConfig;
+import org.ashkan.ghaffari.adminconsole.security.config.properties.IntegrationApiKeyPolicyProperties;
 import org.ashkan.ghaffari.common.security.ApiKeyHasher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,12 +28,12 @@ public class IntegrationApiKeyService {
 
     private final IntegrationRepository integrationRepository;
     private final IntegrationApiKeyRepository integrationApiKeyRepository;
-    private final IntegrationApiKeyPolicyConfig policyConfig;
+    private final IntegrationApiKeyPolicyProperties policyConfig;
     private final SecureRandom secureRandom = new SecureRandom();
 
     public IntegrationApiKeyService(IntegrationRepository integrationRepository,
                                     IntegrationApiKeyRepository integrationApiKeyRepository,
-                                    IntegrationApiKeyPolicyConfig policyConfig) {
+                                    IntegrationApiKeyPolicyProperties policyConfig) {
         this.integrationRepository = integrationRepository;
         this.integrationApiKeyRepository = integrationApiKeyRepository;
         this.policyConfig = policyConfig;
