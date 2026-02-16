@@ -1,4 +1,4 @@
-name: chat-service-ci
+name: ingestion-gateway-ci
 
 permissions:
   contents: read
@@ -8,13 +8,13 @@ on:
   push:
     branches: [ development, 'feature/**', 'bugfix/**', 'hotfix/**' ]
     paths:
-      - 'services/chat-service/**'
+      - 'services/ingestion-gateway/**'
       - 'pom.xml'
-      - '.github/workflows/chat-service-ci.yml'
+      - '.github/workflows/ingestion-gateway-ci.yml'
       - '.github/workflows/_service-ci.yml'
   pull_request:
     paths:
-      - 'services/chat-service/**'
+      - 'services/ingestion-gateway/**'
       - 'pom.xml'
   workflow_dispatch:
 
@@ -22,6 +22,6 @@ jobs:
   ci:
     uses: ./.github/workflows/_service-ci.yml
     with:
-      service: chat-service
+      service: ingestion-gateway
     secrets:
       gh_token: ${{ secrets.GITHUB_TOKEN }}
