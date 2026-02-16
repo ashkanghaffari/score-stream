@@ -3,7 +3,7 @@ repoOwner: ashkanghaffari  # linked to GH org/user
 images:
   admin-console: latest
   ingestor: latest
-  chat-service: latest
+  ingestion-gateway: latest
   inference-analyzer: latest
 image:
   pullPolicy: Always
