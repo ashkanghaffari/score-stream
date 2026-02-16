@@ -32,15 +32,15 @@ releases:
       - image:
           repository: ghcr.io/{{ .Values.repoOwner }}/ingestor
           tag: {{ (index .Values.images "ingestor") | default "latest" }}
-  - name: chat-service
-    labels: { app: chat-service }
+  - name: ingestion-gateway
+    labels: { app: ingestion-gateway }
     namespace: {{ .Environment.Values.namespace }}
-    chart: ../services/chat-service/helm/chat-service
+    chart: ../services/ingestion-gateway/helm/ingestion-gateway
     values:
       - values/common.yaml
       - image:
-          repository: ghcr.io/{{ .Values.repoOwner }}/chat-service
-          tag: {{ (index .Values.images "chat-service") | default "latest" }}
+          repository: ghcr.io/{{ .Values.repoOwner }}/ingestion-gateway
+          tag: {{ (index .Values.images "ingestion-gateway") | default "latest" }}
   - name: inference-analyzer
     labels: { app: inference-analyzer }
     namespace: {{ .Environment.Values.namespace }}
