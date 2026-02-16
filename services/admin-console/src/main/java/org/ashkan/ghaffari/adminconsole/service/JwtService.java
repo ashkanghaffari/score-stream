@@ -3,7 +3,7 @@ package org.ashkan.ghaffari.adminconsole.service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.ashkan.ghaffari.adminconsole.security.token.JwtTokenConfig;
+import org.ashkan.ghaffari.adminconsole.security.config.properties.JwtTokenProperties;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -15,10 +15,10 @@ import java.util.Map;
 @Service
 public class JwtService {
 
-    private final JwtTokenConfig config;
+    private final JwtTokenProperties config;
     private final SecretKey key;
 
-    public JwtService(JwtTokenConfig config) {
+    public JwtService(JwtTokenProperties config) {
         this.config = config;
         validateSecret(config.getSecret());
         this.key = Keys.hmacShaKeyFor(config.getSecret().getBytes(StandardCharsets.UTF_8));

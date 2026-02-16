@@ -1,0 +1,27 @@
+name: ingestion-gateway-ci
+
+permissions:
+  contents: read
+  packages: write
+
+on:
+  push:
+    branches: [ development, 'feature/**', 'bugfix/**', 'hotfix/**' ]
+    paths:
+      - 'services/ingestion-gateway/**'
+      - 'pom.xml'
+      - '.github/workflows/ingestion-gateway-ci.yml'
+      - '.github/workflows/_service-ci.yml'
+  pull_request:
+    paths:
+      - 'services/ingestion-gateway/**'
+      - 'pom.xml'
+  workflow_dispatch:
+
+jobs:
+  ci:
+    uses: ./.github/workflows/_service-ci.yml
+    with:
+      service: ingestion-gateway
+    secrets:
+      gh_token: ${{ secrets.GITHUB_TOKEN }}
